@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Flexxmart Admin | Dashboard</title>
+  <link href="tailwind-output.css" rel="stylesheet">
+  <style>
+    @media (max-width: 640px) {
+      .text-responsive {
+        font-size: clamp(0.75rem, 3vw, 1rem);
+      }
+      .text-responsive-sm {
+        font-size: clamp(0.65rem, 2.5vw, 0.875rem);
+      }
+      .card-responsive {
+        padding: 0.75rem;
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
+  <!-- Mobile Header -->
+  <header class="lg:hidden fixed top-0 left-0 right-0 bg-black text-white flex items-center justify-between px-4 py-3 shadow-md z-50">
+    <div class="text-lg font-bold">Flexxmart</div>
+
+    <!-- Semicircle container -->
+    <div class="relative h-12 rounded-b-full flex items-center justify-end px-2">
+      <!-- Logout Link styled like a button -->
+      <a href="admin_login.html" class="text-white font-semibold text-sm bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg">
+        Logout
+      </a>
+    </div>
+  </header>
+
+  <!-- Bottom Navigation (Mobile Only) -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around items-center py-2 shadow-md lg:hidden z-50">
+    <a href="admin_dashboard.html" class="flex flex-col items-center text-xs text-gray-700 hover:text-blue-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v11a2 2 0 01-2 2h-4a2 2 0 01-2-2H9a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+      </svg>
+      Dashboard
+    </a>
+    <a href="admin_orders.html" class="flex flex-col items-center text-xs text-gray-700 hover:text-blue-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6h13v6M9 10V7a2 2 0 012-2h4a2 2 0 012 2v3" />
+      </svg>
+      Orders
+    </a>
+    <a href="admin_users.html" class="flex flex-col items-center text-xs text-gray-700 hover:text-blue-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A6 6 0 0112 15a6 6 0 016.879 2.804M15 11a3 3 0 10-6 0 3 3 0 006 0z" />
+      </svg>
+      Users
+    </a>
+    <a href="admin_products.html" class="flex flex-col items-center text-xs text-gray-700 hover:text-blue-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2h-5.586A2 2 0 0011 3.414L9.414 5H6a2 2 0 00-2 2v7" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 13h18v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6z" />
+      </svg>
+      Products
+    </a>
+    <a href="admin_categories.html" class="flex flex-col items-center text-xs text-gray-700 hover:text-blue-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+      </svg>
+      Categories
+    </a>
+    <a href="admin_stock.html" class="flex flex-col items-center text-xs text-gray-700 hover:text-blue-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v16H4V4z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 9h16M9 4v16" />
+      </svg>
+      Stock
+    </a>
+  </nav>
+
+  <!-- Desktop Layout -->
+  <div class="lg:flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#1C1C1C] text-white shadow-xl hidden lg:block">
+      <div class="p-6 font-bold text-2xl tracking-wide">Flexxcart Admin</div>
+      <nav class="mt-8 space-y-1">
+        <a href="admin_dashboard.html" class="block px-6 py-3 rounded-l-full text-white bg-blue-700 font-semibold">Dashboard</a>
+        <a href="admin_orders.html" class="block px-6 py-3 rounded-l-full hover:bg-blue-700 hover:font-semibold">Orders</a>
+        <a href="admin_users.html" class="block px-6 py-3 rounded-l-full hover:bg-blue-700 hover:font-semibold">Users</a>
+        <a href="admin_products.html" class="block px-6 py-3 rounded-l-full hover:bg-blue-700 hover:font-semibold">Products</a>
+        <a href="admin_categories.html" class="block px-6 py-3 rounded-l-full hover:bg-blue-700 hover:font-semibold">Categories</a>
+        <a href="admin_stock.html" class="block px-6 py-3 rounded-l-full hover:bg-blue-700 hover:font-semibold">Stock</a>
+      </nav>
+      <div class="px-6 py-4 mt-8">
+        <button onclick="window.location.href='admin_login.html'" class="w-full bg-blue-600 py-2 px-4 rounded-lg hover:bg-blue-700 font-semibold">
+          Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Top Blue Header -->
+      <header class="hidden lg:flex bg-blue-700 shadow px-8 py-4 justify-between items-center text-white">
+        <h1 class="text-2xl font-bold">Dashboard</h1>
+        <div class="flex items-center gap-4">
+          <span class="text-sm text-blue-100">Welcome, Admin</span>
+        </div>
+      </header>
+
+      <main class="flex-1 p-4 pb-20 lg:pb-4 pt-16">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-white rounded-xl p-4 shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-500">Total Orders</p>
+                <p id="totalOrders" class="text-2xl font-bold text-blue-700 mt-1">0</p>
+              </div>
+              <div class="bg-blue-100 p-3 rounded-full">
+                <svg class="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-2"><span id="orderChange" class="font-semibold">0%</span> from last month</p>
+          </div>
+          
+          <div class="bg-white rounded-xl p-4 shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-500">Total Revenue</p>
+                <p id="totalRevenue" class="text-2xl font-bold text-blue-700 mt-1">$0.00</p>
+              </div>
+              <div class="bg-green-100 p-3 rounded-full">
+                <svg class="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-2"><span id="revenueChange" class="font-semibold">0%</span> from last month</p>
+          </div>
+          
+          <div class="bg-white rounded-xl p-4 shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-500">Active Users</p>
+                <p id="totalUsers" class="text-2xl font-bold text-blue-700 mt-1">0</p>
+              </div>
+              <div class="bg-purple-100 p-3 rounded-full">
+                <svg class="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-2"><span id="userChange" class="font-semibold">0%</span> from last month</p>
+          </div>
+          
+          <div class="bg-white rounded-xl p-4 shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-500">Products</p>
+                <p id="totalProducts" class="text-2xl font-bold text-blue-700 mt-1">0</p>
+              </div>
+              <div class="bg-yellow-100 p-3 rounded-full">
+                <svg class="w-6 h-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-2"><span id="productChange" class="font-semibold">0%</span> from last month</p>
+          </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div class="p-4 border-b flex justify-between items-center">
+            <h2 class="text-lg font-semibold text-gray-800">Recent Orders</h2>
+            <a href="admin_orders.html" class="text-sm text-blue-600 hover:text-blue-800">View All</a>
+          </div>
+          
+          <!-- Desktop Table -->
+          <div class="hidden lg:block">
+            <table class="min-w-full text-sm">
+              <thead class="bg-blue-50 text-gray-700">
+                <tr>
+                  <th class="px-6 py-3 text-left">Order ID</th>
+                  <th class="px-6 py-3 text-left">Customer</th>
+                  <th class="px-6 py-3 text-left">Date</th>
+                  <th class="px-6 py-3 text-left">Amount</th>
+                  <th class="px-6 py-3 text-left">Status</th>
+                  <th class="px-6 py-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="recentOrdersTable" class="divide-y divide-gray-200">
+                <tr>
+                  <td colspan="6" class="px-6 py-4 text-center text-gray-500">Loading orders...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Mobile Card View -->
+          <div id="recentOrdersMobile" class="lg:hidden divide-y divide-gray-200">
+            <div class="p-4 text-center text-gray-500">Loading orders...</div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore, collection, getDocs, doc, getDoc,
+      query, orderBy, limit, onSnapshot  // <-- missing in your code
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBPONiic8kjN_WBB66r6y04zDB6mI1dTYw",
+      authDomain: "flexxmart-5127c.firebaseapp.com",
+      projectId: "flexxmart-5127c",
+      storageBucket: "flexxmart-5127c.appspot.com",
+      messagingSenderId: "220683612360",
+      appId: "1:220683612360:web:9898850a45983dd31475fd"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Load dashboard stats
+    async function loadDashboardStats() {
+      try {
+        // Get counts from collections
+        // Only count orders where status is exactly 'confirmed'
+        onSnapshot(collection(db, "orders"), (ordersSnapshot) => {
+          document.getElementById('totalOrders').textContent = ordersSnapshot.size;
+
+          let revenue = 0;
+          ordersSnapshot.forEach(doc => {
+            const order = doc.data();
+            const status = order.status?.toLowerCase();
+
+            // Count revenue from confirmed, delivered, or pickedup orders
+            if (["confirmed", "delivered", "pickedup"].includes(status)) {
+              let total = order.total;
+              if (typeof total === 'string') total = total.replace(/[^\d.]/g, '');
+              const parsed = parseFloat(total);
+              if (!isNaN(parsed)) revenue += parsed;
+            }
+          });
+
+          document.getElementById('totalRevenue').textContent = `$${revenue.toFixed(2)}`;
+        });
+
+
+        onSnapshot(collection(db, "users"), (usersSnapshot) => {
+          document.getElementById('totalUsers').textContent = usersSnapshot.size;
+        });
+
+        onSnapshot(collection(db, "products"), (productsSnapshot) => {
+          document.getElementById('totalProducts').textContent = productsSnapshot.size;
+        });
+
+
+        // TODO: Implement percentage change calculations
+        document.getElementById('orderChange').textContent = "+12%";
+        document.getElementById('revenueChange').textContent = "+18%";
+        document.getElementById('userChange').textContent = "+5%";
+        document.getElementById('productChange').textContent = "+3%";
+
+      } catch (error) {
+        console.error("Error loading dashboard stats:", error);
+      }
+    }
+
+    // Load recent orders
+    async function loadRecentOrders() {
+      try {
+        const q = query(
+          collection(db, "orders"), 
+          orderBy("timestamp", "desc"), 
+          limit(5)
+        );
+
+        onSnapshot(q, (querySnapshot) => {
+          if (querySnapshot.empty) {
+            document.getElementById('recentOrdersTable').innerHTML = `
+              <tr>
+                <td colspan="6" class="px-6 py-4 text-center text-gray-500">No recent orders found</td>
+              </tr>`;
+            document.getElementById('recentOrdersMobile').innerHTML = `
+              <div class="p-4 text-center text-gray-500">No recent orders found</div>`;
+            return;
+          }
+
+          // Wrap the async logic inside here
+          (async () => {
+            let desktopHTML = '';
+            let mobileHTML = '';
+
+            for (const docSnap of querySnapshot.docs) {
+              const order = docSnap.data();
+              const orderId = docSnap.id;
+              const date = order.timestamp ? new Date(order.timestamp).toLocaleDateString() : 'N/A';
+              const status = (order.status || "pending").charAt(0).toUpperCase() + (order.status || "pending").slice(1);
+              let customerName = "Customer";
+              let total = order.total;
+
+              if (typeof total === 'string') {
+                total = total.replace(/[^\d.]/g, '');
+              }
+              total = isNaN(parseFloat(total)) ? '0.00' : parseFloat(total).toFixed(2);
+
+              if (order.userId) {
+                try {
+                  const userSnap = await getDoc(doc(db, "users", order.userId));
+                  if (userSnap.exists()) {
+                    const user = userSnap.data();
+                    customerName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.name || "Customer";
+                  }
+                } catch (err) {
+                  console.warn("User fetch failed:", err);
+                }
+              }
+
+              let statusColor = 'bg-gray-100 text-gray-800';
+              if (status.toLowerCase() === 'completed') statusColor = 'bg-green-100 text-green-800';
+              if (status.toLowerCase() === 'pending') statusColor = 'bg-yellow-100 text-yellow-800';
+              if (status.toLowerCase() === 'cancelled') statusColor = 'bg-red-100 text-red-800';
+
+              desktopHTML += `
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 font-medium">${orderId.substring(0, 8)}...</td>
+                  <td class="px-6 py-4">${customerName}</td>
+                  <td class="px-6 py-4">${date}</td>
+                  <td class="px-6 py-4 font-semibold">$${total}</td>
+                  <td class="px-6 py-4">
+                    <span class="px-2 py-1 rounded-full text-xs ${statusColor}">${status}</span>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <a href="admin_orders.html?order=${orderId}" class="text-blue-600 hover:text-blue-800 text-sm">View</a>
+                  </td>
+                </tr>`;
+
+              mobileHTML += `
+                <div class="p-4">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <h3 class="font-semibold">Order #${orderId.substring(0, 8)}...</h3>
+                      <p class="text-sm text-gray-600">${customerName}</p>
+                    </div>
+                    <span class="px-2 py-1 rounded-full text-xs ${statusColor}">${status}</span>
+                  </div>
+                  <div class="mt-2 grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                      <p class="text-xs text-gray-500">Date</p>
+                      <p>${date}</p>
+                    </div>
+                    <div>
+                      <p class="text-xs text-gray-500">Amount</p>
+                      <p class="font-semibold text-blue-700">$${total}</p>
+                    </div>
+                  </div>
+                  <div class="mt-2 text-right">
+                    <a href="admin_orders.html?order=${orderId}" class="text-blue-600 hover:text-blue-800 text-sm">View Details</a>
+                  </div>
+                </div>`;
+            }
+
+            document.getElementById('recentOrdersTable').innerHTML = desktopHTML;
+            document.getElementById('recentOrdersMobile').innerHTML = mobileHTML;
+          })();
+        });
+
+      } catch (error) {
+        console.error("Error loading recent orders:", error);
+        document.getElementById('recentOrdersTable').innerHTML = `
+          <tr>
+            <td colspan="6" class="px-6 py-4 text-center text-red-500">Failed to load orders</td>
+          </tr>`;
+        document.getElementById('recentOrdersMobile').innerHTML = `
+          <div class="p-4 text-center text-red-500">Failed to load orders</div>`;
+      }
+    }
+
+
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const auth = getAuth(app);
+
+    // Admin Access Control
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        // Not logged in
+        window.location.href = "admin_login.html";
+        return;
+      }
+
+      // Check if user is in 'admins' collection and is active
+      const adminDoc = await getDoc(doc(db, "admins", user.uid));
+      if (!adminDoc.exists() || !adminDoc.data().isActive) {
+        alert("Access denied: Not an active admin.");
+        await signOut(auth);
+        window.location.href = "admin_login.html";
+        return;
+      }
+
+      // ✅ Now safe to load dashboard
+      loadDashboardStats();
+      loadRecentOrders();
+    });
+
+
+  </script>
+</body>
+</html>

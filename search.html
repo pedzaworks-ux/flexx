@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flexxmart | Search</title>
+
+  <!-- Fonts & Styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Firebase + Shared logic -->
+  <script type="module" src="shared.js"></script>
+  <!-- Inject header/footer -->
+  <script src="inject.js" defer></script>
+</head>
+
+<body class="auth-loading">
+
+  <main>
+    <section class="products-section">
+      <h2 style="color: black">Search Results</h2>
+      <div class="products-grid" id="searchResults"></div>
+    </section>
+  </main>
+
+  <div id="toastContainer"></div>
+
+  <script type="module">
+    import { db, auth, updateCartCount } from './shared.js';
+    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const resultsEl = document.getElementById("searchResults");
+    const params = new URLSearchParams(window.location.search);
+    const rawQuery = (params.get("query") || "").trim().toLowerCase();
+
+    // Wait for header/footer using MutationObserver
+    const observer = new MutationObserver((mutations) => {
+      if (document.querySelector('header') && document.querySelector('footer')) {
+        observer.disconnect();
+        initSearchPage();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    function initSearchPage() {
+      // Firebase auth handling
+      onAuthStateChanged(auth, () => {
+        document.body.classList.remove("auth-loading");
+        updateCartCount(); // safe now, header exists
+      });
+
+      // Run search
+      if (!rawQuery) {
+        resultsEl.innerHTML = "<p>Please enter a search query.</p>";
+      } else {
+        doSearch(rawQuery);
+      }
+    }
+
+    async function doSearch(q) {
+      const snap = await getDocs(collection(db, "products"));
+      const found = [];
+      snap.forEach(d => {
+        const data = d.data();
+        const name = (data.name || "").toLowerCase();
+        const cat  = (data.category || "").toLowerCase();
+        if (name.includes(q) || cat.includes(q)) {
+          found.push({ id: d.id, ...data });
+        }
+      });
+
+      if (found.length === 0) {
+        resultsEl.innerHTML = "<p>No results found.</p>";
+        return;
+      }
+
+      resultsEl.innerHTML = found.map(p => `
+        <div class="product-card">
+          <img src="${p.image}" alt="${p.name}" />
+          <h4>${p.name}</h4>
+          <p><strong>Price: $${parseFloat(p.price).toFixed(2)}</strong></p>
+          <div class="btn-group">
+            <button onclick="addToCart({id: '${p.id}', name: '${p.name}'})">Add to Cart</button>
+            <button onclick="buyNow('${p.id}')">Buy Now</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    window.buyNow = id => {
+      localStorage.setItem("cart", JSON.stringify([{id, quantity: 1}]));
+      document.dispatchEvent(new Event("cart-updated"));
+      location.href = "cart.html";
+    };
+  </script>
+
+</body>
+</html>

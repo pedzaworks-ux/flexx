@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flexxcart | Your Orders</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script type="module" src="shared.js"></script>
+  <script src="inject.js" defer></script>
+  <style>
+    main {
+      max-width: 1200px;
+      margin: 60px auto;
+      padding: 40px;
+      background-color: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: #28a745;
+    }
+
+    .no-orders {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #555;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1rem;
+      
+    }
+
+    th, td {
+      padding: 12px 35px; 
+      text-align: center;
+    }
+
+   
+
+    th {
+      background: #f0f0f0;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    td:nth-child(3) {
+      color: #222;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      table {
+        display: block;
+        overflow-x: auto;
+        width: 100%;
+      }
+      th, td {
+        padding: 12px 28px;
+      }
+      main {
+        padding: 20px;
+      }
+      h2 {
+        font-size: 1.4rem;
+      }
+    }
+
+
+    @media (max-width: 430px) {
+      main{
+        margin: 20px;
+       
+      }
+      table{
+        font-size: 12px;
+      }
+      th, td {
+        padding: 12px 0px;
+      }
+      .view-btn{
+        max-height: 23px;
+        max-width: 50px;
+      }
+
+    }
+
+    @media (max-width: 401px) {
+      table{
+        font-size: 10px;
+      }
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .modal-content h3 {
+      margin-top: 0;
+    }
+
+    .modal-content ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .modal-content li {
+      padding: 6px 0;
+    }
+
+    .close-btn {
+      margin-top: 20px;
+      background: #d60000;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="auth-loading">
+  <div id="header-container"></div>
+
+  <main>
+    <h2 style="color: black;">Your Orders</h2>
+    <div id="orders-container">
+      <p class="no-orders">Loading your orders...</p>
+    </div>
+  </main>
+
+  <div class="modal" id="orderModal">
+    <div class="modal-content">
+      <h3>Ordered Items</h3>
+      <ul id="modalItems"></ul>
+      <button class="close-btn" onclick="document.getElementById('orderModal').style.display='none'">Close</button>
+    </div>
+  </div>
+
+  <div id="footer-container"></div>
+
+  <script type="module">
+    import { db, auth } from './shared.js';
+    import { collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+    const ordersContainer = document.getElementById("orders-container");
+    const modal = document.getElementById("orderModal");
+    const modalItems = document.getElementById("modalItems");
+
+    function statusColor(status) {
+      switch ((status || '').toLowerCase()) {
+        case 'pending': return 'orange';
+        case 'confirmed': return 'blue';
+        case 'delivered': return 'green';
+        case 'cancelled': return 'red';
+        default: return 'gray';
+      }
+    }
+
+    function openModal(items) {
+      modalItems.innerHTML = '';
+      items.forEach(i => {
+        const li = document.createElement('li');
+        li.textContent = `${i.name || 'Unnamed'} (x${i.quantity || 1})`;
+        modalItems.appendChild(li);
+      });
+      modal.style.display = 'flex';
+    }
+
+    window.openModal = openModal;
+
+    onAuthStateChanged(auth, async user => {
+      document.body.classList.remove('auth-loading');
+      if (!user) {
+        ordersContainer.innerHTML = `<p class="no-orders">Please log in to view your orders.</p>`;
+        return;
+      }
+
+      const ordersRef = collection(db, 'orders');
+      const q = query(ordersRef, where('userId', '==', user.uid));
+      const snapshot = await getDocs(q);
+
+      const orders = [];
+      snapshot.forEach(doc => orders.push(doc.data()));
+
+      if (orders.length === 0) {
+        ordersContainer.innerHTML = `<p class="no-orders">You have not placed any orders yet.</p>`;
+        return;
+      }
+
+      orders.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+      const table = document.createElement("table");
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      `;
+
+      const tbody = table.querySelector("tbody");
+
+      orders.forEach(order => {
+        const dateStr = new Date(order.timestamp).toLocaleString();
+        const items = order.items || order.itemsOrdered || order.cart || [];
+
+        const itemCount = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+        let totalStr = order.total;
+        if (!totalStr && typeof order.totalAmount === "number") {
+          totalStr = `$${order.totalAmount.toFixed(2)}`;
+        } else if (typeof order.total === "string") {
+          totalStr = order.total.startsWith("$") ? order.total : `$${order.total}`;
+        } else {
+          totalStr = "$0.00";
+        }
+
+        const status = order.status || "Pending";
+        const color = statusColor(status);
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td style="padding:10px; border-bottom:1px solid #ddd;">${dateStr}</td>
+          <td style="padding:10px; border-bottom:1px solid #ddd;">${itemCount}</td>
+          <td style="padding:10px; border-bottom:1px solid #ddd; font-weight:600;">${totalStr}</td>
+          <td style="padding:10px; border-bottom:1px solid #ddd; color:${color}; font-weight:bold;">${status}</td>
+          <td style="padding:10px; border-bottom:1px solid #ddd;">
+            <button class="view-btn" style="padding:6px 12px; background:#007bff; color:white; border:none; border-radius:6px; cursor:pointer;"
+              onclick='window.openModal(${JSON.stringify(items).replace(/'/g, "\'")})'>
+              View
+            </button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      ordersContainer.innerHTML = '';
+      ordersContainer.appendChild(table);
+    });
+  </script>
+</body>
+</html>

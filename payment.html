@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flexxcart | Payment Reference</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="shared.js"></script>
+  <script src="inject.js" defer></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #ffe6ff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .reference-card {
+      margin-top: -30px;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      max-width: 440px;
+      width: 100%;
+    }
+
+    .reference-card h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      text-align: center;
+      font-size: 1.4rem;
+    }
+
+    .reference-card p {
+      font-size: 0.95rem;
+      color: #333;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button.submit-btn {
+      width: 100%;
+      background-color: #d60000;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #d60000;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 6px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .justified-text {
+      text-align: justify;
+      text-justify: inter-word;
+      line-height: 1.6;
+      margin-left: 0px;
+      max-width: 800px;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .reference-card{
+        margin-top: 50px;
+      }
+
+
+    @media (max-width: 430px) {
+      .reference-card{
+        margin-top: 60px;
+      }
+
+      .reference-card p{
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 390px) {
+      .reference-card h2{
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="header-container"></div>
+  <main>
+    <div class="reference-card">
+      <h2>Enter Payment Reference</h2>
+      <p = class = "justified-text">Please make your payment to the merchant account shown below. Once payment is made, enter your transaction reference number below to complete your order confirmation.</p>
+      <p><strong>Ecocash:</strong> 123456 (EcoCash)<br><strong>Innbucks:</strong> flexxcartzw</p>
+
+      <form id="refForm">
+         <div class="form-group">
+          <label for="amountInput">Amount Paid (USD)</label>
+          <input type="number" id="amountInput" placeholder="Enter the amount paid" required />
+        </div>
+        <div class="form-group">
+          <label for="refInput">Transaction Reference Number</label>
+          <input type="text" id="refInput" placeholder="e.g. EC123456ZWL" required />
+        </div>
+        <button type="submit" class="submit-btn" id="submitRefBtn">
+          <span id="submitText">Submit Reference</span>
+          <span id="submitSpinner" style="display: none; margin-left: 8px;">
+            <i class="fas fa-spinner fa-spin"></i>
+          </span>
+        </button>
+      </form>
+
+    </div>
+  </main>
+  <div id="toast" class="toast"></div>
+  <div id="footer-container"></div>
+
+  <script type="module">
+    import { db, auth } from './shared.js';
+    import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const form = document.getElementById("refForm");
+    const toast = document.getElementById("toast");
+    const amountInput = document.getElementById("amountInput");
+    const refInput = document.getElementById("refInput");
+    const order = JSON.parse(localStorage.getItem("latestOrder"));
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3000);
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const ref = refInput.value.trim();
+      const amountPaid = parseFloat(amountInput.value.trim());
+
+      if (!ref || isNaN(amountPaid)) {
+        showToast("Please fill in all required fields.");
+        return;
+      }
+
+      // Extract number from total string like "$12.50"
+      const requiredAmount = parseFloat((order?.total || "").replace(/[^0-9.]/g, ""));
+      if (amountPaid < requiredAmount) {
+        showToast(`Amount must be at least $${requiredAmount.toFixed(2)}.`);
+        return;
+      }
+
+      const btn = document.getElementById("submitRefBtn");
+      const text = document.getElementById("submitText");
+      const spinner = document.getElementById("submitSpinner");
+
+      btn.disabled = true;
+      text.textContent = "Submitting...";
+      spinner.style.display = "inline-block";
+
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          showToast("You must be logged in to place an order.");
+          resetBtn();
+          return;
+        }
+
+        const items = order.cart.map(item => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price
+        }));
+
+        const orderData = {
+          orderId: order.id || "ORD" + Math.floor(Math.random() * 1000000), 
+          userId: user.uid,
+          items,
+          total: requiredAmount,
+          amountPaid: amountPaid,
+          orderType: order.orderType,
+          paymentMethod: order.paymentMethod,
+          deliveryAddress: order.deliveryAddress || '',
+          pickupDate: order.pickupDate || '',
+          pickupTime: order.pickupTime || '',
+          transactionRef: ref,
+          paymentStatus: "submitted",
+          status: "pending",
+          timestamp: new Date().toISOString()
+        };
+
+        try {
+          await addDoc(collection(db, "orders"), orderData);
+          showToast("Order submitted successfully.");
+          localStorage.removeItem("cart");
+          localStorage.removeItem("latestOrder");
+          setTimeout(() => window.location.href = "success.html", 2000);
+        } catch (err) {
+          console.error("Error writing order:", err);
+          showToast("Failed to submit. Try again.");
+          resetBtn();
+        }
+      });
+
+      function resetBtn() {
+        btn.disabled = false;
+        text.textContent = "Submit Reference";
+        spinner.style.display = "none";
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+{
+  "hosting": {
+    "public": "./",
+    "cleanUrls": true,
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      { "source": "/", "destination": "/index.html" },
+
+      // User Pages
+      { "source": "/login", "destination": "/login.html" },
+      { "source": "/signup", "destination": "/signup.html" },
+      { "source": "/cart", "destination": "/cart.html" },
+      { "source": "/checkout", "destination": "/checkout.html" },
+      { "source": "/shop", "destination": "/shop.html" },
+      { "source": "/orders", "destination": "/orders.html" },
+      { "source": "/account-details", "destination": "/account_details.html" },
+      { "source": "/saved-address", "destination": "/saved_address.html" },
+      { "source": "/search", "destination": "/search.html" },
+      { "source": "/contact-us", "destination": "/contact_us.html" },
+      { "source": "/about-us", "destination": "/about_us.html" },
+      { "source": "/payment", "destination": "/payment.html" },
+      { "source": "/confirmation", "destination": "/confirmation.html" },
+      { "source": "/success", "destination": "/success.html" },
+
+      // Admin Pages
+      { "source": "/admin", "destination": "/admin_login.html" },
+      { "source": "/admin-login", "destination": "/admin_login.html" },
+      { "source": "/admin-signup", "destination": "/admin_signup.html" },
+      { "source": "/admin-dashboard", "destination": "/admin_dashboard.html" },
+      { "source": "/admin-orders", "destination": "/admin_orders.html" },
+      { "source": "/admin-users", "destination": "/admin_users.html" },
+      { "source": "/admin-products", "destination": "/admin_products.html" },
+      { "source": "/admin-categories", "destination": "/admin_categories.html" },
+      { "source": "/admin-stock", "destination": "/admin_stock.html" }
+    ]
+  }
+}

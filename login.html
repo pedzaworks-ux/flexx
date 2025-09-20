@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flexxcart | Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * { box-sizing: border-box; }
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: url('login.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      display: grid;
+      place-items: center;
+    }
+
+    .login-container {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 500px;
+      margin: 20px auto;
+      margin-top: 0px;
+    }
+
+    .footer-text {
+      text-align: center;
+      font-size: 10px;
+      color: #999;
+      margin-top: 25px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #d60000;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      transition: border 0.3s;
+    }
+
+    input:focus {
+      border-color: #d60000;
+      outline: none;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .toggle-eye {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #777;
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 15px;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap; /* ⬅️ Prevents wrapping to next line */
+    }
+
+
+    .form-options label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+    }
+
+
+    .form-options a {
+      color: #d60000;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .form-options a:hover {
+      text-decoration: underline;
+    }
+
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #d60000;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #b30000;
+    }
+
+    .message {
+      text-align: center;
+      font-size: 14px;
+      margin: 10px 0;
+      min-height: 20px;
+    }
+
+    .error-msg { color: #d60000; font-weight: 500; }
+    .success-msg { color: #28a745; font-weight: 500; }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .login-link a {
+      color: #d60000;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 430px) {
+      .login-container {
+        padding: 20px;
+      }
+
+      input {
+        padding: 10px 12px;
+        font-size: 13px;
+      }
+
+      button {
+        padding: 10px;
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Welcome Back</h2>
+    <form id="loginForm">
+      <input type="text" id="emailOrUsername" placeholder="Email or Username" required />
+
+      <div class="password-wrapper">
+        <input type="password" id="password" placeholder="Password" required />
+        <i class="toggle-eye fas fa-eye"></i>
+      </div>
+
+      <div class="form-options">
+        <label class="remember-me">
+          <input type="checkbox" id="rememberMe" />
+          Remember Me
+        </label>
+        <a href="#">Forgot Password?</a>
+      </div>
+      <button type="submit" id="loginBtn">
+        <span id="loginBtnText">Login</span>
+        <span id="loginSpinner" style="display:none; margin-left: 8px;">
+          <i class="fas fa-spinner fa-spin"></i>
+        </span>
+      </button>
+      <div class="message error-msg" id="errorMsg"></div>
+    </form>
+
+    <div class="login-link">
+      Don’t have an account? <a href="signup.html">Sign up here</a>
+    </div>
+    <div class="footer-text">
+      © 2025 Pedzaworks Software Solutions. All rights reserved.
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, fetchSignInMethodsForEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBPONiic8kjN_WBB66r6y04zDB6mI1dTYw",
+      authDomain: "flexxmart-5127c.firebaseapp.com",
+      projectId: "flexxmart-5127c",
+      storageBucket: "flexxmart-5127c.appspot.com",
+      messagingSenderId: "220683612360",
+      appId: "1:220683612360:web:9898850a45983dd31475fd"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const loginForm = document.getElementById("loginForm");
+    const errorMsg = document.getElementById("errorMsg");
+    const toggleEye = document.querySelector(".toggle-eye");
+    const passwordInput = document.getElementById("password");
+
+    toggleEye.addEventListener("click", () => {
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggleEye.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+        passwordInput.type = "password";
+        toggleEye.classList.replace("fa-eye-slash", "fa-eye");
+      }
+    });
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const input = document.getElementById("emailOrUsername").value.trim();
+      const password = passwordInput.value;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      errorMsg.textContent = "";
+      const loginBtn = document.getElementById("loginBtn");
+      const loginBtnText = document.getElementById("loginBtnText");
+      const loginSpinner = document.getElementById("loginSpinner");
+
+      // Start loading
+      loginBtn.disabled = true;
+      loginBtnText.textContent = "Logging in";
+      loginSpinner.style.display = "inline-block";
+
+
+      let emailToUse = input;
+
+      try {
+        if (!emailRegex.test(input)) {
+          // Treat as username
+          const usernameDoc = await getDoc(doc(db, "usernames", input));
+          if (!usernameDoc.exists()) {
+            errorMsg.textContent = "Username not found.";
+            return;
+          }
+          const uid = usernameDoc.data().uid;
+          const userDoc = await getDoc(doc(db, "users", uid));
+          if (!userDoc.exists()) {
+            errorMsg.textContent = "User data missing for this username.";
+            return;
+          }
+          emailToUse = userDoc.data().email;
+        }
+
+        // Try logging in
+        await signInWithEmailAndPassword(auth, emailToUse, password);
+        window.location.href = "index.html";
+
+      } catch (error) {
+        let message = "Login failed. Please try again.";
+        switch (error.code) {
+          case "auth/invalid-credential":
+          case "auth/wrong-password":
+            message = "Incorrect email or password.";
+            break;
+          case "auth/user-disabled":
+            message = "Your account has been disabled.";
+            break;
+          case "auth/too-many-requests":
+            message = "Too many attempts. Please try again later.";
+            break;
+          case "auth/user-not-found":
+            message = "No account found with that email.";
+            break;
+          case "auth/network-request-failed":
+            message = "Network error. Please check your connection.";
+            break;
+          default:
+            message = error.message;
+        }
+        errorMsg.textContent = message;
+      }  finally {
+    // Stop loading
+        loginBtn.disabled = false;
+        loginBtnText.textContent = "Login";
+        loginSpinner.style.display = "none";
+      }
+    });
+
+  </script>
+</body>
+</html>

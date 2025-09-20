@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Flexxmart | Fast Online Shopping in Zimbabwe</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+  <style>
+    /* Modern design system with consistent color palette */
+    :root {
+      --primary-red: #d60000;
+      --primary-red-light: #ff3333;
+      --primary-red-dark: #b30000;
+
+      --secondary-orange: #ff8c42;
+      --secondary-coral: #ff6b6b;
+
+      --accent-light: #fff5f5;
+      --accent-pale: #fef2f2;
+
+      --text-primary: #1a1a1a;
+      --text-secondary: #4a4a4a;
+      --text-accent: #d60000;
+      --text-muted: #707070;
+
+      --neutral-white: #ffffff;
+      --neutral-light: #f8f9fa;
+      --gradient-background: linear-gradient(to bottom, #fefefe, #f5f7fa);
+
+      --shadow-light: 0 1px 3px rgba(214,0,0,0.12), 0 1px 2px rgba(214,0,0,0.08);
+      --shadow-medium: 0 4px 6px rgba(214,0,0,0.1), 0 2px 4px rgba(214,0,0,0.06);
+      --shadow-large: 0 10px 15px rgba(214,0,0,0.1), 0 4px 6px rgba(214,0,0,0.05);
+      --shadow-hover: 0 20px 25px rgba(214,0,0,0.15), 0 10px 10px rgba(214,0,0,0.04);
+
+      --border-radius-sm: 8px;
+      --border-radius-md: 12px;
+      --border-radius-lg: 16px;
+      --border-radius-xl: 20px;
+    }
+
+    * { 
+      box-sizing: border-box; 
+      margin: 0;
+      padding: 0;
+    }
+    
+    body, html {
+      font-family: 'Roboto', sans-serif;
+      background: var(--gradient-background);
+      color: var(--text-primary);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body.auth-loading {
+      visibility: hidden;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 5%;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0 32px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .page-title {
+      font-family: 'Merriweather', serif;
+      color: var(--text-accent);
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .search-box {
+      display: flex;
+      background: var(--neutral-white);
+      border-radius: 50px;
+      padding: 12px 20px;
+      box-shadow: var(--shadow-medium);
+      border: 1px solid rgba(214,0,0,0.08);
+      width: 320px;
+      max-width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .search-box:focus-within {
+      box-shadow: var(--shadow-large);
+      border-color: var(--primary-red-light);
+      transform: translateY(-1px);
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      flex: 1;
+      padding: 8px 12px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+    }
+
+    .search-box input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-box button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--primary-red);
+      padding: 8px;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+
+    .search-box button:hover {
+      background: var(--accent-pale);
+      transform: scale(1.1);
+    }
+
+    .category-filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 10px 20px;
+      background: var(--neutral-white);
+      border: 1px solid rgba(214,0,0,0.12);
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-light);
+      color: var(--text-secondary);
+    }
+
+    .filter-btn:hover {
+      background: var(--accent-light);
+      border-color: var(--primary-red-light);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .filter-btn.active {
+      background: var(--primary-red);
+      color: var(--neutral-white);
+      border-color: var(--primary-red);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 10px;
+    }
+
+    .category-card {
+      background: var(--neutral-white);
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--shadow-medium);
+      border: 1px solid rgba(214,0,0,0.08);
+      padding: 0;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      position: relative;
+    }
+
+    .category-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-red), var(--secondary-orange));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .category-card:hover {
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--primary-red-light);
+    }
+
+    .category-card:hover::before {
+      opacity: 1;
+    }
+
+    .category-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .category-card:hover .category-image {
+      transform: scale(1.08);
+    }
+
+    .category-content {
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      gap: 12px;
+    }
+
+    .category-card h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.4;
+      min-height: 3.36em;
+    }
+
+    .category-card .shop-btn {
+      background: linear-gradient(135deg, var(--primary-red), var(--primary-red-light));
+      color: var(--neutral-white);
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 100%;
+      margin-top: auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .category-card .shop-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .category-card .shop-btn:hover {
+      background: linear-gradient(135deg, var(--primary-red-light), var(--secondary-coral));
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .category-card .shop-btn:hover::before {
+      left: 100%;
+    }
+
+    .loading-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 400px;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid rgba(214,0,0,0.1);
+      border-radius: 50%;
+      border-top-color: var(--primary-red);
+      animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-container p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .no-categories {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      background: var(--neutral-white);
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--shadow-light);
+      margin: 40px 0;
+    }
+
+    .no-categories i {
+      font-size: 4rem;
+      color: var(--primary-red);
+      margin-bottom: 20px;
+      opacity: 0.6;
+    }
+
+    .no-categories h3 {
+      font-size: 1.5rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .no-categories p {
+      font-size: 1rem;
+    }
+
+    /* Enhanced responsive design */
+    @media screen and (max-width: 1200px) {
+      .categories {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+      }
+    }
+
+    @media screen and (max-width: 1024px) {
+      .categories {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+      
+      .page-header {
+        margin: 16px 0 24px;
+      }
+
+      .page-title {
+        font-size: 1.8rem;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      main {
+        padding: 20px 4%;
+      }
+
+      .categories {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+      
+      .page-title {
+        font-size: 1.6rem;
+      }
+      
+      .search-box {
+        width: 100%;
+      }
+
+      .category-content {
+        padding: 20px 16px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      main {
+        padding: 16px;
+      }
+      
+      .categories {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+      
+      .category-image {
+        height: 160px;
+      }
+      
+      .page-title {
+        font-size: 1.4rem;
+      }
+
+      .category-content {
+        padding: 18px 14px;
+      }
+
+      .category-card h3 {
+        font-size: 1.1rem;
+      }
+    }
+
+    /* Focus states for accessibility */
+    .filter-btn:focus,
+    .search-box button:focus,
+    .category-card .shop-btn:focus {
+      outline: 3px solid rgba(214,0,0,0.3);
+      outline-offset: 2px;
+    }
+
+    /* Smooth loading animation */
+    .category-card {
+      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .category-card:nth-child(1) { animation-delay: 0.1s; }
+    .category-card:nth-child(2) { animation-delay: 0.2s; }
+    .category-card:nth-child(3) { animation-delay: 0.3s; }
+    .category-card:nth-child(4) { animation-delay: 0.4s; }
+    .category-card:nth-child(5) { animation-delay: 0.5s; }
+    .category-card:nth-child(6) { animation-delay: 0.6s; }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body class="auth-loading">
+  <main>
+    <div class="page-header">
+      <h1 class="page-title">Shop by Category</h1>
+      <div class="search-box">
+        <input type="text" placeholder="Search categories..." id="categorySearch">
+        <button type="button" aria-label="Search categories">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="category-filters">
+      <button class="filter-btn active" data-filter="all">All Categories</button>
+      <button class="filter-btn" data-filter="popular">Popular</button>
+      <button class="filter-btn" data-filter="sale">On Sale</button>
+      <button class="filter-btn" data-filter="new">New Arrivals</button>
+    </div>
+    
+    <div class="loading-container" id="loadingIndicator">
+      <div class="spinner"></div>
+      <p>Loading categories...</p>
+    </div>
+    
+    <div class="categories" id="categoryContainer" style="display: none;"></div>
+    
+    <div class="no-categories" id="noCategories" style="display: none;">
+      <i class="fas fa-store"></i>
+      <h3>No categories found</h3>
+      <p>Check back later for our exciting product categories</p>
+    </div>
+  </main>
+
+  <!-- Enhanced module script with improved UX -->
+  <script type="module">
+    import { db, auth, updateCartCount } from './shared.js';
+    import { 
+      collection, 
+      getDocs 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { 
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const categoryContainer = document.getElementById("categoryContainer");
+    const loadingIndicator = document.getElementById("loadingIndicator");
+    const noCategories = document.getElementById("noCategories");
+    const categorySearch = document.getElementById("categorySearch");
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    let categoriesData = [];
+    let filteredData = [];
+
+    async function loadCategories() {
+      try {
+        showLoading();
+        
+        const snapshot = await getDocs(collection(db, "categories"));
+        categoriesData = [];
+
+        if (snapshot.empty) {
+          showNoCategories();
+          return;
+        }
+
+        snapshot.forEach(doc => {
+          categoriesData.push({ id: doc.id, ...doc.data() });
+        });
+        
+        filteredData = [...categoriesData];
+        displayCategories(filteredData);
+        
+      } catch (error) {
+        console.error("Error loading categories:", error);
+        showError();
+      }
+    }
+
+    function showLoading() {
+      loadingIndicator.style.display = 'flex';
+      categoryContainer.style.display = 'none';
+      noCategories.style.display = 'none';
+    }
+
+    function showNoCategories() {
+      loadingIndicator.style.display = 'none';
+      categoryContainer.style.display = 'none';
+      noCategories.style.display = 'block';
+    }
+
+    function showError() {
+      loadingIndicator.style.display = 'none';
+      categoryContainer.innerHTML = `
+        <div class="no-categories" style="grid-column: 1 / -1;">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h3>Failed to load categories</h3>
+          <p>Please check your connection and try again</p>
+          <button onclick="location.reload()" style="margin-top: 16px; padding: 10px 20px; background: var(--primary-red); color: white; border: none; border-radius: 8px; cursor: pointer;">Retry</button>
+        </div>
+      `;
+      categoryContainer.style.display = 'grid';
+    }
+
+    function displayCategories(categories) {
+      categoryContainer.innerHTML = "";
+      
+      if (categories.length === 0) {
+        showNoCategories();
+        return;
+      }
+      
+      categories.forEach((category, index) => {
+        const { name, image } = category;
+        const slug = name.toLowerCase().replace(/\s+/g, '-');
+
+        const card = document.createElement("div");
+        card.className = "category-card";
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.innerHTML = `
+          <a href="shop.html#${slug}" aria-label="Browse ${name}">
+            <img src="${image}" alt="${name}" class="category-image" loading="lazy">
+          </a>
+          <div class="category-content">
+            <h3>${name}</h3>
+            <button class="shop-btn" onclick="location.href='shop.html#${slug}'" aria-label="Shop ${name} now">
+              Shop Now
+            </button>
+          </div>
+        `;
+        categoryContainer.appendChild(card);
+      });
+      
+      loadingIndicator.style.display = 'none';
+      categoryContainer.style.display = 'grid';
+      noCategories.style.display = 'none';
+    }
+
+    // Enhanced search with debouncing
+    let searchTimeout;
+    categorySearch.addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        
+        if (searchTerm === '') {
+          filteredData = [...categoriesData];
+        } else {
+          filteredData = categoriesData.filter(category => 
+            category.name.toLowerCase().includes(searchTerm) ||
+            (category.description && category.description.toLowerCase().includes(searchTerm))
+          );
+        }
+        
+        displayCategories(filteredData);
+      }, 300);
+    });
+
+    // Enhanced filter functionality
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Update active state
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        
+        const filter = button.dataset.filter;
+        let filtered = [...categoriesData];
+        
+        // Apply search filter first if there's a search term
+        const searchTerm = categorySearch.value.toLowerCase().trim();
+        if (searchTerm !== '') {
+          filtered = filtered.filter(category => 
+            category.name.toLowerCase().includes(searchTerm) ||
+            (category.description && category.description.toLowerCase().includes(searchTerm))
+          );
+        }
+        
+        // Then apply category filter
+        switch(filter) {
+          case 'popular':
+            filtered = filtered.filter(cat => cat.popular === true);
+            break;
+          case 'sale':
+            filtered = filtered.filter(cat => cat.onSale === true);
+            break;
+          case 'new':
+            filtered = filtered.filter(cat => cat.isNew === true);
+            break;
+          case 'all':
+          default:
+            // Keep all filtered results
+            break;
+        }
+        
+        filteredData = filtered;
+        displayCategories(filteredData);
+      });
+    });
+
+    // Wait for auth, then load categories
+    onAuthStateChanged(auth, user => {
+      document.body.classList.remove("auth-loading");
+      updateCartCount();
+      loadCategories();
+    });
+
+    // Add smooth scrolling to top when categories load
+    window.addEventListener('load', () => {
+      if (window.location.hash) {
+        setTimeout(() => {
+          document.querySelector(window.location.hash)?.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }, 100);
+      }
+    });
+  </script>
+
+  <!-- Header/Footer Injection Script -->
+  <script>
+(function(){
+  const FRAG = 'header-footer.html'; // keep next to index.html
+
+  function alreadyHasLinkHref(href) {
+    return Array.from(document.head.querySelectorAll('link[rel="stylesheet"],link[rel="preload"],link[rel="icon"]'))
+      .some(l => {
+        const existing = (l.href || l.getAttribute('href') || '');
+        return existing && (existing.includes(href) || existing === href);
+      });
+  }
+
+  function alreadyHasStyleWithText(text) {
+    return Array.from(document.head.querySelectorAll('style')).some(s => (s.textContent || '').trim() === (text || '').trim());
+  }
+
+  function copyHeadNodes(fragDoc) {
+    if (!fragDoc || !fragDoc.head) return;
+    Array.from(fragDoc.head.children).forEach(node => {
+      if (node.tagName === 'LINK' && (node.rel === 'stylesheet' || node.getAttribute('rel') === 'stylesheet')) {
+        const href = node.getAttribute('href') || node.href;
+        if (href && !alreadyHasLinkHref(href)) {
+          const clone = document.createElement('link');
+          clone.rel = 'stylesheet';
+          clone.href = href;
+          document.head.appendChild(clone);
+        }
+      } else if (node.tagName === 'STYLE') {
+        const txt = node.textContent || '';
+        if (txt && !alreadyHasStyleWithText(txt)) {
+          const clone = document.createElement('style');
+          clone.textContent = txt;
+          document.head.appendChild(clone);
+        }
+      } else if (node.tagName === 'LINK' && node.getAttribute('rel') === 'preload') {
+        const href = node.getAttribute('href') || node.href;
+        if (href && !alreadyHasLinkHref(href)) {
+          const clone = document.createElement('link');
+          clone.rel = node.rel;
+          clone.as = node.as || '';
+          clone.href = href;
+          document.head.appendChild(clone);
+        }
+      }
+    });
+  }
+
+  function replaceOrInsert(targetSelector, newNode) {
+    if (!newNode) return;
+    const existing = document.querySelector(targetSelector);
+    if (existing) existing.replaceWith(newNode);
+    else {
+      // try to insert in sensible place: header before main, nav after header, footer at end
+      const main = document.querySelector('main');
+      if (newNode.tagName.toLowerCase() === 'header') {
+        if (main) document.body.insertBefore(newNode, main);
+        else document.body.insertBefore(newNode, document.body.firstChild);
+      } else if (newNode.tagName.toLowerCase() === 'nav') {
+        const hdr = document.querySelector('header');
+        if (hdr && hdr.parentNode) hdr.parentNode.insertBefore(newNode, hdr.nextSibling);
+        else if (main && main.parentNode) main.parentNode.insertBefore(newNode, main);
+        else document.body.appendChild(newNode);
+      } else if (newNode.tagName.toLowerCase() === 'footer') {
+        document.body.appendChild(newNode);
+      } else {
+        document.body.appendChild(newNode);
+      }
+    }
+  }
+
+  function injectFragment(htmlText) {
+    const parser = new DOMParser();
+    const fragDoc = parser.parseFromString(htmlText, 'text/html');
+
+    // copy head nodes (styles/links) so design tokens/fonts are available
+    copyHeadNodes(fragDoc);
+
+    // find nodes in fragment
+    const hdr = fragDoc.querySelector('header');
+    const nav = fragDoc.querySelector('nav');
+    const ftr = fragDoc.querySelector('footer');
+
+    // clone to adopt into current document
+    const hdrClone = hdr ? hdr.cloneNode(true) : null;
+    const navClone = nav ? nav.cloneNode(true) : null;
+    const ftrClone = ftr ? ftr.cloneNode(true) : null;
+
+    // Replace existing if present; otherwise insert
+    replaceOrInsert('header', hdrClone);
+    replaceOrInsert('nav', navClone);
+    replaceOrInsert('footer', ftrClone);
+
+    // optional: if header has scripts that must run, you can re-run initialization functions here
+    if (typeof window.updateCartCount === 'function') {
+      try { window.updateCartCount(); } catch (e) { /* ignore */ }
+    }
+  }
+
+  // Fetch once
+  function init() {
+    if (!window.__headerFooterInjected) {
+      window.__headerFooterInjected = true;
+      fetch(FRAG, { cache: 'no-store' })
+        .then(r => {
+          if (!r.ok) throw new Error('Failed to fetch ' + FRAG + ' (' + r.status + ')');
+          return r.text();
+        })
+        .then(html => injectFragment(html))
+        .catch(err => console.warn('Could not inject header-footer:', err));
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flexxcart Admin | Stock</title>
+  <link href="tailwind-output.css" rel="stylesheet">
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
+  <!-- Mobile Header -->
+  <header class="lg:hidden fixed top-0 left-0 right-0 bg-black text-white flex items-center justify-between px-4 py-3 shadow-md z-50">
+    <div class="text-lg font-bold">Flexxmart</div>
+
+    <!-- Semicircle container -->
+    <div class="relative h-12 rounded-b-full flex items-center justify-end px-2">
+      <!-- Logout Link styled like a button -->
+      <a href="admin_login.html" class="text-white font-semibold text-sm bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg">
+        Logout
+      </a>
+    </div>
+  </header>
+
+  <!-- Bottom Navigation (Mobile Only) -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around items-center py-2 shadow-md lg:hidden z-50">
+    <a href="admin_dashboard.html" class="flex flex-col items-center text-xs text-gray-700 hover:text-blue-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v11a2 2 0 01-2 2h-4a2 2 0 01-2-2H9a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+      </svg>
+      Dashboard
+    </a>
+    <a href="admin_orders.html" class="flex flex-col items-center text-xs text-gray-700 hover:text-blue-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6h13v6M9 10V7a2 2 0 012-2h4a2 2 0 012 2v3" />
+      </svg>
+      Orders
+    </a>
+    <a href="admin_users.html" class="flex flex-col items-center text-xs text-gray-700 hover:text-blue-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A6 6 0 0112 15a6 6 0 016.879 2.804M15 11a3 3 0 10-6 0 3 3 0 006 0z" />
+      </svg>
+      Users
+    </a>
+    <a href="admin_products.html" class="flex flex-col items-center text-xs text-gray-700 hover:text-blue-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2h-5.586A2 2 0 0011 3.414L9.414 5H6a2 2 0 00-2 2v7" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 13h18v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6z" />
+      </svg>
+      Products
+    </a>
+    <a href="admin_categories.html" class="flex flex-col items-center text-xs text-gray-700 hover:text-blue-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+      </svg>
+      Categories
+    </a>
+    <a href="admin_stock.html" class="flex flex-col items-center text-xs text-blue-700 font-semibold">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v16H4V4z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 9h16M9 4v16" />
+      </svg>
+      Stock
+    </a>
+  </nav>
+
+  <!-- Desktop Layout -->
+  <div class="lg:flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#1C1C1C] text-white shadow-xl hidden lg:block">
+      <div class="p-6 font-bold text-2xl tracking-wide">Flexxmart Admin</div>
+      <nav class="mt-8 space-y-1">
+        <a href="admin_dashboard.html" class="block px-6 py-3 rounded-l-full hover:bg-blue-700 hover:font-semibold">Dashboard</a>
+        <a href="admin_orders.html" class="block px-6 py-3 rounded-l-full hover:bg-blue-700 hover:font-semibold">Orders</a>
+        <a href="admin_users.html" class="block px-6 py-3 rounded-l-full hover:bg-blue-700 hover:font-semibold">Users</a>
+        <a href="admin_products.html" class="block px-6 py-3 rounded-l-full hover:bg-blue-700 hover:font-semibold">Products</a>
+        <a href="admin_categories.html" class="block px-6 py-3 rounded-l-full hover:bg-blue-700 hover:font-semibold">Categories</a>
+        <a href="admin_stock.html" class="block px-6 py-3 rounded-l-full text-white bg-blue-700 font-semibold">Stock</a>
+      </nav>
+      <div class="px-6 py-4 mt-8">
+        <button onclick="window.location.href='admin_login.html'" class="w-full bg-blue-600 py-2 px-4 rounded-lg hover:bg-blue-700 font-semibold">
+          Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Top Blue Header -->
+      <header class="hidden lg:flex bg-blue-700 shadow px-8 py-4 justify-between items-center text-white">
+        <h1 class="text-2xl font-bold">Stock Management</h1>
+        <div class="flex items-center gap-4">
+          <span class="text-sm text-blue-100">Welcome, Admin</span>
+        </div>
+      </header>
+
+      <main class="flex-1 p-4 pt-16">
+        <div class="bg-white rounded-xl shadow-lg p-4">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-blue-800">Stock Levels</h2>
+            <div class="flex gap-2">
+              <button onclick="filterStock(true)" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-sm">In Stock</button>
+              <button onclick="filterStock(false)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 text-sm">Out of Stock</button>
+              <button onclick="loadProducts()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 text-sm">Show All</button>
+            </div>
+          </div>
+
+          <!-- Desktop Table -->
+          <div class="hidden lg:block overflow-x-auto">
+            <table class="min-w-full text-sm text-left">
+              <thead class="bg-blue-100 text-gray-700">
+                <tr>
+                  <th class="px-6 py-3">Product Name</th>
+                  <th class="px-6 py-3">Category</th>
+                  <th class="px-6 py-3">Current Stock</th>
+                  <th class="px-6 py-3">Stock Status</th>
+                  <th class="px-6 py-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="stockTable"></tbody>
+            </table>
+          </div>
+
+          <!-- Mobile Card View -->
+          <div id="stockTableMobile" class="lg:hidden space-y-4"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Stock Modal -->
+  <div id="stockModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <h3 class="text-xl font-semibold mb-4">Update Product Stock</h3>
+      <form id="stockForm" class="space-y-4">
+        <select id="productDropdown" class="w-full border px-4 py-2 rounded" required>
+          <option value="">Select Product</option>
+        </select>
+        <input type="number" id="stockQty" placeholder="New Stock Quantity" class="w-full border px-4 py-2 rounded" required>
+        <div class="flex justify-end space-x-2">
+          <button type="button" onclick="toggleModal()" class="bg-gray-300 px-4 py-2 rounded">Cancel</button>
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Update Stock</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      doc,
+      updateDoc,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBPONiic8kjN_WBB66r6y04zDB6mI1dTYw",
+      authDomain: "flexxmart-5127c.firebaseapp.com",
+      projectId: "flexxmart-5127c",
+      storageBucket: "flexxmart-5127c.firebasestorage.app",
+      messagingSenderId: "220683612360",
+      appId: "1:220683612360:web:9898850a45983dd31475fd"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const productsRef = collection(db, "products");
+    const productSelect = document.getElementById("productDropdown");
+    const stockTable = document.getElementById("stockTable");
+    const stockTableMobile = document.getElementById("stockTableMobile");
+    const stockForm = document.getElementById("stockForm");
+    const modal = document.getElementById("stockModal");
+    let allProducts = [];
+
+    function toggleModal(productId = '') {
+      modal.classList.toggle("hidden");
+      if (productId) {
+        productSelect.value = productId;
+        const product = allProducts.find(p => p.id === productId);
+        if (product) {
+          document.getElementById("stockQty").value = product.stock || 0;
+        }
+      } else {
+        document.getElementById("stockQty").value = '';
+      }
+    }
+
+    async function loadProducts() {
+      const productsSnapshot = await getDocs(productsRef);
+      allProducts = [];
+      stockTable.innerHTML = '';
+      stockTableMobile.innerHTML = '';
+      productSelect.innerHTML = '<option value="">Select Product</option>';
+
+      productsSnapshot.forEach(docSnap => {
+        const product = docSnap.data();
+        const id = docSnap.id;
+        allProducts.push({ id, ...product });
+
+        productSelect.innerHTML += `<option value="${id}">${product.name}</option>`;
+      });
+
+      renderStock(allProducts);
+    }
+
+    function renderStock(products) {
+      stockTable.innerHTML = '';
+      stockTableMobile.innerHTML = '';
+
+      products.forEach(product => {
+        const status = (product.stock || 0) < 10 ? 'Out of Stock' : 'In Stock';
+        const statusColor = status === 'Out of Stock' ? 'text-red-600' : 'text-green-600';
+        const statusBadge = status === 'Out of Stock' ?
+          '<span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">Out of Stock</span>' :
+          '<span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">In Stock</span>';
+
+        const row = document.createElement("tr");
+        row.className = "border-t hover:bg-gray-50";
+        row.innerHTML = `
+          <td class="px-6 py-4">${product.name}</td>
+          <td class="px-6 py-4">${product.categoryName || 'Uncategorized'}</td>
+          <td class="px-6 py-4">${product.stock || 0}</td>
+          <td class="px-6 py-4 font-semibold ${statusColor}">${status}</td>
+          <td class="px-6 py-4">
+            <button onclick="toggleModal('${product.id}')" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Edit</button>
+          </td>`;
+        stockTable.appendChild(row);
+
+        const card = document.createElement("div");
+        card.className = "bg-white rounded-md p-4 shadow";
+        card.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <h3 class="font-semibold">${product.name}</h3>
+              <p class="text-sm text-gray-600">${product.categoryName || 'Uncategorized'}</p>
+            </div>
+            ${statusBadge}
+          </div>
+          <div class="mt-3 flex justify-between items-center">
+            <p class="text-lg font-medium">${product.stock || 0} in stock</p>
+            <button onclick="toggleModal('${product.id}')" class="bg-yellow-500 text-white px-3 py-1 rounded text-sm">Update</button>
+          </div>`;
+        stockTableMobile.appendChild(card);
+      });
+    }
+
+    stockForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const selectedProductId = productSelect.value;
+      const newQty = parseInt(document.getElementById("stockQty").value);
+
+      if (!selectedProductId || isNaN(newQty) || newQty < 0) {
+        alert("Please select a valid product and enter a valid quantity.");
+        return;
+      }
+
+      const productRef = doc(db, "products", selectedProductId);
+      await updateDoc(productRef, { stock: newQty });
+
+      alert("Stock updated successfully!");
+      toggleModal();
+      loadProducts();
+    });
+
+    window.toggleModal = toggleModal;
+    window.filterStock = (inStock) => {
+      const filtered = allProducts.filter(p => inStock ? (p.stock || 0) >= 10 : (p.stock || 0) < 10);
+      renderStock(filtered);
+    };
+
+    // 🔐 Admin Auth Check
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "admin_login.html";
+        return;
+      }
+
+      const adminDoc = await getDoc(doc(db, "admins", user.uid));
+      const isAdmin = adminDoc.exists() && adminDoc.data().role === "admin" && adminDoc.data().isActive === true;
+
+      if (!isAdmin) {
+        alert("Access denied. You are not an active admin.");
+        await signOut(auth);
+        window.location.href = "admin_login.html";
+        return;
+      }
+
+      // ✅ Admin confirmed: Load data
+      loadProducts();
+    });
+  </script>
+
+</body>
+</html>

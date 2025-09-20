@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flexxcart | Sign Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: url('login.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      display: grid;
+      place-items: center;
+    }
+
+    .signup-container {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 400px;
+      margin: 20px auto;
+    }
+
+    h2 {
+      text-align: center;
+      color: #d60000;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      transition: border 0.3s;
+    }
+
+    input:focus {
+      border-color: #d60000;
+      outline: none;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .footer-text {
+      text-align: center;
+      font-size: 11px;
+      color: #999;
+      margin-top: 25px;
+    }
+
+
+    .toggle-eye {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #777;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #d60000;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #b30000;
+    }
+
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    .message {
+      text-align: center;
+      font-size: 14px;
+      margin: 10px 0;
+      min-height: 20px;
+    }
+
+    .error-msg { 
+      color: #d60000;
+      font-weight: 500;
+    }
+
+    #usernameCheck {
+      font-size: 13px;
+    }
+
+
+    .success-msg { 
+      color: #28a745;
+      font-weight: 500;
+    }
+
+    .strength-check {
+      font-size: 13px;
+      margin: 5px 0 10px;
+      color: #555;
+    }
+
+    .strength-check span {
+      display: block;
+      margin: 3px 0;
+    }
+
+    .valid { color: #28a745; }
+    .invalid { color: #dc3545; }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .login-link a {
+      color: #d60000;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .signup-container {
+        padding: 25px;
+        width: 90%;
+      }
+
+      h2 {
+        font-size: 22px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .signup-container {
+        padding: 20px;
+      }
+      .footer-text{
+        font-size: 11px;
+      }
+
+      input {
+        padding: 10px 12px;
+        font-size: 13px;
+      }
+
+      button {
+        padding: 10px;
+        font-size: 15px;
+      }
+
+      .strength-check {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-container">
+    <h2>Create Your Account</h2>
+    <form id="signupForm">
+      <input type="text" id="username" placeholder="Username" required minlength="3" />
+      <div id="usernameCheck" class="strength-check"></div>
+
+      <input type="text" id="name" placeholder="Full Name" required />
+
+      <input type="email" id="email" placeholder="Email Address" required />
+
+      <div class="password-wrapper">
+        <input type="password" id="password" placeholder="Password" required minlength="8" />
+        <i class="toggle-eye fas fa-eye"></i>
+      </div>
+
+      <div id="passwordCheck" class="strength-check">
+        <span id="lengthCheck">• At least 8 characters</span>
+        <span id="uppercaseCheck">• One uppercase letter</span>
+        <span id="numberCheck">• One number</span>
+        <span id="specialCheck">• One special character</span>
+      </div>
+      
+      <div class="password-wrapper">
+        <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
+        <i class="toggle-eye fas fa-eye"></i>
+      </div>
+
+      <button type="submit" id="signupBtn">
+        <span id="btnText">Sign Up</span>
+        <span id="btnSpinner" class="loading-spinner" style="display: none;"></span>
+      </button>
+
+      <div class="message error-msg" id="errorMsg"></div>
+      <div class="message success-msg" id="successMsg"></div>
+    </form>
+    
+    <div class="login-link" style="margin-top: -30px;">
+      Already have an account? <a href="login.html">Login here</a>
+    </div>
+    <div class="footer-text">
+      © 2025 Pedzaworks Software Solutions. All rights reserved.
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword, 
+      updateProfile,
+      fetchSignInMethodsForEmail
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      setDoc, 
+      getDoc 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBPONiic8kjN_WBB66r6y04zDB6mI1dTYw",
+      authDomain: "flexxmart-5127c.firebaseapp.com",
+      projectId: "flexxmart-5127c",
+      storageBucket: "flexxmart-5127c.appspot.com",
+      messagingSenderId: "220683612360",
+      appId: "1:220683612360:web:9898850a45983dd31475fd"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // DOM Elements
+    const signupForm = document.getElementById("signupForm");
+    const errorMsg = document.getElementById("errorMsg");
+    const successMsg = document.getElementById("successMsg");
+    const signupBtn = document.getElementById("signupBtn");
+    const btnText = document.getElementById("btnText");
+    const btnSpinner = document.getElementById("btnSpinner");
+    const toggleEyes = document.querySelectorAll(".toggle-eye");
+
+    // Password strength checker
+    document.getElementById("password").addEventListener("input", checkPasswordStrength);
+
+    function checkPasswordStrength() {
+      const password = document.getElementById("password").value;
+
+      document.getElementById("lengthCheck").className = password.length >= 8 ? "valid" : "invalid";
+      document.getElementById("uppercaseCheck").className = /[A-Z]/.test(password) ? "valid" : "invalid";
+      document.getElementById("numberCheck").className = /\d/.test(password) ? "valid" : "invalid";
+      document.getElementById("specialCheck").className = /[!@#$%^&*(),.?":{}|<>]/.test(password) ? "valid" : "invalid";
+    }
+
+    // Username availability check
+    document.getElementById("username").addEventListener("blur", async () => {
+      const username = document.getElementById("username").value.trim();
+      const usernameCheck = document.getElementById("usernameCheck");
+
+      if (username.length < 3) {
+        usernameCheck.textContent = "Username must be at least 3 characters.";
+        usernameCheck.className = "invalid";
+        return;
+      }
+
+      if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+        usernameCheck.textContent = "Only letters, numbers and underscores allowed.";
+        usernameCheck.className = "invalid";
+        return;
+      }
+
+      const usernameRef = doc(db, "usernames", username.toLowerCase());
+      const snap = await getDoc(usernameRef);
+
+      if (snap.exists()) {
+        usernameCheck.textContent = "Username not available.";
+        usernameCheck.className = "invalid";
+      } else {
+        usernameCheck.textContent = "Username available.";
+        usernameCheck.className = "valid";
+      }
+    });
+
+    // Email availability check
+    document.getElementById("email").addEventListener("blur", async () => {
+      const email = document.getElementById("email").value.trim();
+      if (!email) return;
+
+      try {
+        const methods = await fetchSignInMethodsForEmail(auth, email);
+        if (methods.length > 0) {
+          errorMsg.textContent = "Email already in use. Please login instead.";
+        } else {
+          errorMsg.textContent = "";
+        }
+      } catch (error) {
+        console.error("Error checking email:", error);
+      }
+    });
+
+    // Toggle password visibility
+    toggleEyes.forEach(eye => {
+      eye.addEventListener("click", function() {
+        const input = this.parentElement.querySelector("input");
+        if (input.type === "password") {
+          input.type = "text";
+          this.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+          input.type = "password";
+          this.classList.replace("fa-eye-slash", "fa-eye");
+        }
+      });
+    });
+
+    // Form submission
+    signupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Get form values
+      const username = document.getElementById("username").value.trim();
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+
+      // Reset messages
+      errorMsg.textContent = "";
+      successMsg.textContent = "";
+
+      // Validate inputs
+      if (!username || !name || !email || !password || !confirmPassword) {
+        errorMsg.textContent = "Please fill in all fields.";
+        return;
+      }
+
+      if (username.length < 3) {
+        errorMsg.textContent = "Username must be at least 3 characters.";
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        errorMsg.textContent = "Passwords do not match.";
+        return;
+      }
+
+      if (password.length < 8) {
+        errorMsg.textContent = "Password must be at least 8 characters.";
+        return;
+      }
+
+      // Show loading state
+      btnText.textContent = "Creating account...";
+      btnSpinner.style.display = "inline-block";
+      signupBtn.disabled = true;
+
+      try {
+        // Check username availability again (in case it wasn't checked)
+        const usernameRef = doc(db, "usernames", username.toLowerCase());
+        const usernameSnap = await getDoc(usernameRef);
+
+        if (usernameSnap.exists()) {
+          throw new Error("Username already taken. Please choose another.");
+        }
+
+        // Check email availability
+        const methods = await fetchSignInMethodsForEmail(auth, email);
+        if (methods.length > 0) {
+          throw new Error("Email already in use. Please login instead.");
+        }
+
+        // Create user
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Update user profile
+        await updateProfile(user, { 
+          displayName: username 
+        });
+
+        // Save additional user data
+        await setDoc(doc(db, "users", user.uid), {
+          uid: user.uid,
+          name: name,
+          email: email,
+          username: username,
+          createdAt: new Date().toISOString()
+        });
+
+        // Save username reference
+        await setDoc(doc(db, "usernames", username.toLowerCase()), { 
+          uid: user.uid 
+        });
+
+        // Show success message
+        successMsg.textContent = "Account created successfully! Redirecting...";
+        signupForm.reset();
+
+        // Redirect to login page
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 2000);
+
+      } catch (error) {
+        // Handle specific Firebase errors
+        let errorMessage = "Signup failed. Please try again.";
+        
+        switch (error.code) {
+          case "auth/email-already-in-use":
+            errorMessage = "Email already in use. Please login instead.";
+            break;
+          case "auth/invalid-email":
+            errorMessage = "Invalid email address.";
+            break;
+          case "auth/weak-password":
+            errorMessage = "Password is too weak. Use at least 8 characters with a mix of letters, numbers and symbols.";
+            break;
+          case "auth/operation-not-allowed":
+            errorMessage = "Account creation is currently disabled.";
+            break;
+          default:
+            errorMessage = error.message || "Signup failed. Please try again.";
+        }
+
+        errorMsg.textContent = errorMessage;
+
+      } finally {
+        // Reset button state
+        btnText.textContent = "Sign Up";
+        btnSpinner.style.display = "none";
+        signupBtn.disabled = false;
+      }
+    });
+
+    // Clear errors when user starts typing
+    document.getElementById("username").addEventListener("input", () => {
+      errorMsg.textContent = "";
+    });
+    document.getElementById("email").addEventListener("input", () => {
+      errorMsg.textContent = "";
+    });
+    document.getElementById("password").addEventListener("input", () => {
+      errorMsg.textContent = "";
+    });
+  </script>
+</body>
+</html>

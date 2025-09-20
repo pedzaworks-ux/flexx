@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flexxmart Header & Footer (Injectable)</title>
+
+  <!-- Font Awesome + Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Design system adapted for Flexxmart red theme */
+    :root {
+      /* Primary Colors - Red Palette */
+      --primary-red: #d60000;
+      --primary-red-light: #ff3333;
+      --primary-red-dark: #b30000;
+      --primary-red-hover: #a50000;
+
+      /* Secondary Colors - Orange */
+      --secondary-orange: #ff8c42;
+      --secondary-orange-light: #ffa366;
+      --secondary-orange-dark: #e6793a;
+      --secondary-orange-hover: #cc6832;
+
+      /* Accent Colors - Light Pink/Coral */
+      --accent-coral: #ff6b6b;
+      --accent-coral-light: #ff9999;
+      --accent-coral-dark: #e55555;
+      --accent-coral-pale: #fff5f5;
+
+      /* Text Colors for better visibility */
+      --text-primary: #1a1a1a;
+      --text-secondary: #2d2d2d;
+      --text-tertiary: #4a4a4a;
+      --text-muted: #707070;
+      --text-light: #8a8a8a;
+      --text-on-dark: #f5f5f5;
+      --text-on-primary: #ffffff;
+      --text-accent: #d60000;
+      --text-warning: #b8860b;
+      --text-success: #0e735f;
+      --text-error: #c53030;
+
+      /* Neutral Colors */
+      --neutral-white: #ffffff;
+      --neutral-light: #fafafa;
+      --neutral-gray-50: #fdfdfd;
+      --neutral-gray-100: #f8f8f8;
+      --neutral-gray-200: #e8e8e8;
+      --neutral-gray-300: #d0d0d0;
+      --neutral-gray-400: #9ca3af;
+      --neutral-gray-500: #6b7280;
+      --neutral-gray-600: #4b5563;
+      --neutral-gray-700: #374151;
+      --neutral-gray-800: #1f2937;
+      --neutral-gray-900: #111827;
+
+      /* Status Colors */
+      --success-green: #14a085;
+      --success-green-light: #a2d5ab;
+      --warning-yellow: #ffd93d;
+      --warning-yellow-light: #fff4c4;
+      --error-red: #ff6b6b;
+      --error-red-light: #ffe3e3;
+
+      /* Shadows and Effects with red tints */
+      --shadow-light: 0 1px 3px rgba(214, 0, 0, 0.12), 0 1px 2px rgba(214, 0, 0, 0.08);
+      --shadow-medium: 0 4px 6px rgba(214, 0, 0, 0.1), 0 2px 4px rgba(214, 0, 0, 0.06);
+      --shadow-large: 0 10px 15px rgba(214, 0, 0, 0.1), 0 4px 6px rgba(214, 0, 0, 0.05);
+      --shadow-hover: 0 20px 25px rgba(214, 0, 0, 0.15), 0 8px 10px rgba(214, 0, 0, 0.1);
+
+      /* Gradients */
+      --gradient-primary: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-red-light) 100%);
+      --gradient-secondary: linear-gradient(135deg, var(--secondary-orange) 0%, var(--secondary-orange-light) 100%);
+      --gradient-accent: linear-gradient(135deg, var(--accent-coral-light) 0%, var(--accent-coral) 100%);
+      --gradient-background: linear-gradient(to bottom, var(--neutral-light), var(--neutral-gray-100));
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--gradient-background);
+      font-family: 'Roboto', sans-serif;
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Enhanced Header - exactly like FarmLink */
+    header {
+      background: var(--neutral-white);
+      box-shadow: var(--shadow-medium);
+      padding: 0.8rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 2px solid var(--accent-coral-light);
+    }
+
+    .header-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 1rem;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .logo-section a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .logo-section img {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-right: 0.5rem;
+    }
+
+    .logo-section h1 {
+      font-size: 1.8rem;
+      font-family: 'Merriweather', serif;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .logo-section .flexx { 
+      color: var(--text-primary); 
+    }
+    
+    .logo-section .mart { 
+      color: var(--primary-red); 
+    }
+
+    .header-main .search-bar {
+      flex: 1;
+      max-width: 500px;
+      margin: 0 1.5rem;
+      display: flex;
+      box-shadow: var(--shadow-light);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid var(--accent-coral-light);
+    }
+
+    .search-bar input {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      background: var(--neutral-white);
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .search-bar input:focus {
+      outline: none;
+      background: var(--accent-coral-pale);
+    }
+
+    .search-bar input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-bar button {
+      padding: 12px 18px;
+      background: var(--gradient-secondary);
+      color: var(--text-on-primary);
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .search-bar button:hover {
+      background: var(--secondary-orange-dark);
+      transform: scale(1.02);
+    }
+
+    .header-icons {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .header-icons a {
+      color: var(--text-secondary);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 10px 12px;
+      border-radius: 8px;
+    }
+
+    .header-icons a:hover {
+      color: var(--primary-red);
+      background: var(--accent-coral-pale);
+      transform: translateY(-2px);
+    }
+
+    .cart-icon-wrapper {
+      position: relative;
+    }
+
+    .cart-icon-wrapper #cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: var(--accent-coral);
+      color: var(--text-on-primary);
+      border-radius: 50%;
+      font-size: 0.7rem;
+      padding: 3px 7px;
+      font-weight: bold;
+      box-shadow: var(--shadow-light);
+    }
+
+    /* Enhanced Navigation */
+    nav {
+      background: var(--gradient-primary);
+      padding: 1rem 0;
+      box-shadow: 0 2px 8px rgba(214, 0, 0, 0.15);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      padding: 0 1rem;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.3rem;
+    }
+
+    .nav-links li a {
+      color: var(--text-on-primary);
+      text-decoration: none;
+      padding: 0.6rem 1rem;
+      display: block;
+      transition: all 0.3s ease;
+      border-radius: 8px;
+      white-space: nowrap;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .nav-links li a:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Enhanced Footer */
+    footer {
+      background: var(--primary-red-dark);
+      color: var(--text-on-dark);
+      padding: 3rem 0 1.5rem 0;
+      margin-top: 3rem;
+      position: relative;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-secondary);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2.5rem;
+    }
+
+    .footer-column h3 {
+      color: var(--accent-coral-light);
+      margin-bottom: 1.3rem;
+      font-size: 1.3rem;
+      position: relative;
+      padding-bottom: 0.5rem;
+      font-weight: 700;
+    }
+
+    .footer-column h3::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--gradient-secondary);
+      border-radius: 2px;
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column ul li {
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .footer-column ul li i {
+      margin-right: 0.8rem;
+      font-size: 1rem;
+      width: 18px;
+      text-align: center;
+      color: var(--secondary-orange-light);
+    }
+
+    .footer-column a {
+      color: var(--text-on-dark);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+    }
+
+    .footer-column a:hover {
+      color: var(--accent-coral-light);
+      transform: translateX(5px);
+    }
+
+    .footer-column p {
+      color: var(--text-on-dark);
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+
+    .social-icons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .social-icons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 45px;
+      height: 45px;
+      background: rgba(255, 107, 107, 0.15);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      border: 2px solid transparent;
+    }
+
+    .social-icons a:hover {
+      background: var(--gradient-secondary);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-medium);
+      border-color: var(--accent-coral-light);
+    }
+
+    .newsletter-form {
+      display: flex;
+      margin-top: 1.2rem;
+      box-shadow: var(--shadow-medium);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .newsletter-form input {
+      flex: 1;
+      padding: 1rem;
+      border: none;
+      font-size: 1rem;
+      background: var(--neutral-white);
+      color: var(--text-primary);
+    }
+
+    .newsletter-form input:focus {
+      outline: none;
+    }
+
+    .newsletter-form input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .newsletter-form button {
+      background: var(--gradient-secondary);
+      color: var(--text-on-primary);
+      border: none;
+      padding: 0 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+    }
+
+    .newsletter-form button:hover {
+      background: var(--secondary-orange-dark);
+    }
+
+    .copyright {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 107, 107, 0.2);
+      color: rgba(245, 245, 245, 0.8);
+      font-size: 1rem;
+    }
+
+    /* Responsive Design - EXACT FarmLink breakpoints and behavior */
+    @media (max-width: 760px) {
+      .header-main {
+        flex-wrap: wrap;
+      }
+
+      .search-bar {
+        order: -1;
+        margin: 0.5rem 0;
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 0.8rem 1rem;
+      }
+
+      .logo-section h1 {
+        font-size: 1.6rem;
+      }
+
+      .header-icons {
+        gap: 1rem;
+      }
+
+      .header-icons a {
+        font-size: 1rem;
+        padding: 8px 10px;
+      }
+
+      .header-icons a span.text {
+        display: none;
+      }
+
+      .nav-container {
+        padding: 0 0.5rem;
+      }
+
+      .nav-links {
+        overflow-x: auto;
+        padding-bottom: 0.4rem;
+        justify-content: flex-start;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .nav-links::-webkit-scrollbar {
+        height: 4px;
+      }
+
+      .nav-links::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo-section h1 {
+        font-size: 1.4rem;
+      }
+
+      .header-icons {
+        gap: 0.8rem;
+      }
+
+      .header-icons a {
+        font-size: 1.1rem;
+        padding: 6px 8px;
+      }
+
+      .cart-icon-wrapper #cart-count {
+        top: -6px;
+        right: -6px;
+        font-size: 0.65rem;
+        padding: 2px 5px;
+      }
+
+      .nav-links li a {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.7rem;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .logo-section {
+        display: none;
+      }
+
+      .header-main {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 10px;
+        flex-wrap: nowrap;
+        gap: 8px;
+      }
+
+      .search-bar {
+        order: 1;
+        flex: 1;
+        margin: 0 !important;
+        max-width: calc(100% - 120px); /* Reserve space for icons */
+        min-width: 0; /* Allow shrinking */
+      }
+
+      .search-bar input {
+        padding: 6px 8px;
+        font-size: 0.85rem;
+        min-width: 0; /* Allow input to shrink */
+        width: 100%;
+      }
+
+      .search-bar button {
+        padding: 6px 8px;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+      }
+
+      .header-icons {
+        order: 2;
+        flex-shrink: 0;
+        gap: 0.3rem;
+        width: auto;
+        min-width: fit-content;
+      }
+
+      .header-icons a {
+        padding: 4px 6px;
+        font-size: 0.9rem;
+      }
+
+      .header-icons a span.text {
+        display: none;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .logo-section {
+        display: none;
+      }
+
+      .search-bar {
+        flex: 1;
+      }
+
+      .header-icons {
+        gap: 0.6rem;
+      }
+    }
+
+    /* Enhanced focus states for accessibility */
+    .search-bar input:focus,
+    .newsletter-form input:focus {
+      box-shadow: 0 0 0 3px rgba(214, 0, 0, 0.2);
+    }
+
+    .search-bar button:focus,
+    .newsletter-form button:focus {
+      outline: 3px solid var(--accent-coral);
+      outline-offset: 2px;
+    }
+
+    .nav-links li a:focus {
+      outline: 2px solid rgba(255, 255, 255, 0.5);
+      outline-offset: 2px;
+    }
+
+    .header-icons a:focus {
+      outline: 2px solid var(--primary-red);
+      outline-offset: 2px;
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --text-primary: #f5f5f5;
+        --text-secondary: #e0e0e0;
+        --text-tertiary: #cccccc;
+        --text-muted: #999999;
+        --text-light: #888888;
+        --text-on-dark: #f5f5f5;
+        --neutral-white: #1f2937;
+        --neutral-light: #111827;
+        --neutral-gray-100: #1f2937;
+        --neutral-gray-200: #374151;
+        --neutral-gray-300: #4b5563;
+        --neutral-gray-700: #d1d5db;
+        --neutral-gray-800: #f9fafb;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== HEADER - Exactly like FarmLink ==================== -->
+  <header>
+    <div class="header-main">
+      <div class="logo-section">
+        <a href="index.html" aria-label="Flexxmart home">
+          <img src="https://placehold.co/60x60/d60000/fff?text=F" alt="Flexxmart logo">
+          <h1><span class="flexx">Flexx</span><span class="mart">mart</span></h1>
+        </a>
+      </div>
+
+      <div class="search-bar">
+        <input id="searchInput" type="text" placeholder="Search for products...">
+        <button id="searchBtn" aria-label="Search"><i class="fas fa-search"></i></button>
+      </div>
+
+      <div class="header-icons">
+        <a href="favorites.html" title="Favorites" aria-label="Favorites"><i class="fas fa-heart"></i></a>
+        <a href="cart.html" class="cart-link" title="Cart" aria-label="Cart">
+          <div class="cart-icon-wrapper">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cart-count">0</span>
+          </div>
+        </a>
+        <a href="login.html" title="Account" aria-label="Account"><i class="fas fa-user"></i> <span class="text">Sign In</span></a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== NAV - Exactly like FarmLink ==================== -->
+  <nav>
+    <div class="nav-container">
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="categories.html">Categories</a></li>
+        <li><a href="shop.html">Electronics</a></li>
+        <li><a href="shop.html">Fashion</a></li>
+        <li><a href="shop.html">Home & Garden</a></li>
+        <li><a href="shop.html">Sports</a></li>
+        <li><a href="shop.html">Books</a></li>
+        <li><a href="shop.html">Special Offers</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-column">
+        <h3>Flexxmart</h3>
+        <p>Your trusted online shopping destination in Zimbabwe. Connecting shoppers with quality products, great prices, and reliable service. Building Zimbabwe's e-commerce future together.</p>
+        <div class="social-icons">
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-column">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+          <li><a href="categories.html"><i class="fas fa-chevron-right"></i> Categories</a></li>
+          <li><a href="shop.html"><i class="fas fa-chevron-right"></i> Shop</a></li>
+          <li><a href="about_us.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+          <li><a href="contact_us.html"><i class="fas fa-chevron-right"></i> Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h3>Customer Service</h3>
+        <ul>
+          <li><a href="contact_us.html"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> FAQs</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> Delivery Information</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> Returns Policy</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h3>Contact Info</h3>
+        <ul>
+          <li><i class="fas fa-map-marker-alt"></i> 123 Market Street, Harare</li>
+          <li><i class="fas fa-phone"></i> +263 123 456 789</li>
+          <li><i class="fas fa-envelope"></i> info@flexxmart.co.zw</li>
+        </ul>
+
+        <h3 style="margin-top: 1.5rem;">Newsletter</h3>
+        <p>Subscribe for updates on new products and special offers</p>
+        <div class="newsletter-form">
+          <input type="email" placeholder="Your email address" aria-label="Email address">
+          <button aria-label="Subscribe"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="copyright">
+      &copy; <span id="year"></span> Flexxmart Zimbabwe. All rights reserved. | Your trusted shopping partner
+    </div>
+  </footer>
+
+  <script>
+    // Enhanced JavaScript functionality compatible with shared.js
+    (function(){
+      // Set copyright year
+      try { 
+        document.getElementById('year').textContent = new Date().getFullYear(); 
+      } catch(e) {}
+
+      // Search functionality - matches shared.js expectations
+      function handleSearch(inputElement) {
+        const query = inputElement.value.trim();
+        if (query) {
+          // Use search.html to match shared.js expectations
+          window.location.href = `search.html?query=${encodeURIComponent(query)}`;
+        }
+      }
+
+      // Desktop search - IDs match shared.js
+      const searchBtn = document.getElementById('searchBtn');
+      const searchInput = document.getElementById('searchInput');
+      
+      if (searchBtn && searchInput) {
+        searchBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          handleSearch(searchInput);
+        });
+        searchInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSearch(searchInput);
+          }
+        });
+      }
+
+      // Cart count synchronization - compatible with shared.js
+      function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const count = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+        const cartCountElements = document.querySelectorAll('#cart-count');
+        cartCountElements.forEach(el => {
+          if (el) el.textContent = count;
+        });
+      }
+
+      // Make updateCartCount available globally for shared.js compatibility
+      window.updateCartCount = updateCartCount;
+
+      // Initialize cart count
+      updateCartCount();
+
+      // Listen for cart updates from other pages
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'cart') {
+          updateCartCount();
+        }
+      });
+
+      // Listen for cart update events from shared.js
+      document.addEventListener("cart-updated", updateCartCount);
+
+      // Newsletter subscription
+      const newsletterForm = document.querySelector('.newsletter-form');
+      if (newsletterForm) {
+        const input = newsletterForm.querySelector('input');
+        const button = newsletterForm.querySelector('button');
+        
+        function handleNewsletterSubmit(e) {
+          e.preventDefault();
+          const email = input.value.trim();
+          if (email && email.includes('@')) {
+            // Simulate subscription
+            button.innerHTML = '<i class="fas fa-check"></i>';
+            button.style.background = 'var(--success-green)';
+            input.value = '';
+            
+            setTimeout(() => {
+              button.innerHTML = '<i class="fas fa-paper-plane"></i>';
+              button.style.background = '';
+            }, 3000);
+          } else {
+            input.style.borderColor = 'var(--error-red)';
+            setTimeout(() => {
+              input.style.borderColor = '';
+            }, 3000);
+          }
+        }
+        
+        if (button) {
+          button.addEventListener('click', handleNewsletterSubmit);
+        }
+        
+        if (input) {
+          input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+              handleNewsletterSubmit(e);
+            }
+          });
+        }
+      }
+    })();
+  </script>
+
+</body>
+</html>
