@@ -54,13 +54,65 @@
       padding: 6px 8px;
     }
   }
+
+  .status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .status-pending { background-color: #fef3c7; color: #92400e; }
+  .status-confirmed { background-color: #dbeafe; color: #1d4ed8; }
+  .status-delivered, .status-pickedup, .status-completed { background-color: #d1fae5; color: #065f46; }
+  .status-cancelled { background-color: #fee2e2; color: #dc2626; }
+  .status-pending_verification { background-color: #fde68a; color: #78350f; }
+
+  .loading-spinner {
+    border: 2px solid #f3f4f6;
+    border-top: 2px solid #3b82f6;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .order-items {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .priority-high {
+    border-left: 4px solid #ef4444;
+  }
+
+  .priority-medium {
+    border-left: 4px solid #f59e0b;
+  }
+
+  .priority-low {
+    border-left: 4px solid #10b981;
+  }
   </style>
 </head>
 
 <body class="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
   <!-- Mobile Header -->
   <header class="lg:hidden fixed top-0 left-0 right-0 bg-black text-white flex items-center justify-between px-4 py-3 shadow-md z-50">
-    <div class="text-lg font-bold">Flexxmart</div>
+    <div class="text-lg font-bold">Flexxmart Admin</div>
 
     <!-- Semicircle container -->
     <div class="relative h-12 rounded-b-full flex items-center justify-end px-2">
@@ -139,6 +191,10 @@
       <header class="hidden lg:flex bg-blue-700 shadow px-8 py-4 justify-between items-center text-white">
         <h1 class="text-2xl font-bold">Order Management</h1>
         <div class="flex items-center gap-4">
+          <div class="text-sm">
+            <span class="text-blue-100">Total Orders: </span>
+            <span id="totalOrders" class="font-semibold">0</span>
+          </div>
           <span class="text-sm text-blue-100">Welcome, Admin</span>
         </div>
       </header>
@@ -148,6 +204,10 @@
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
             <h2 class="text-xl font-bold text-blue-800 text-responsive">All Orders</h2>
             <div class="filter-buttons w-full sm:w-auto">
+              <button onclick="filterOrders('pending_verification')" 
+                      class="bg-orange-500 text-white px-3 py-1 rounded hover:bg-orange-600 button-responsive whitespace-nowrap">
+                Pending Verification
+              </button>
               <button onclick="filterOrders('pending')" 
                       class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 button-responsive whitespace-nowrap">
                 Pending
@@ -171,6 +231,19 @@
             </div>
           </div>
 
+          <!-- Search and Sort -->
+          <div class="mb-4 flex flex-col sm:flex-row gap-2">
+            <input type="text" id="searchInput" placeholder="Search by Order ID or Customer..." 
+                   class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select id="sortSelect" onchange="applySorting()" 
+                    class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="amount_high">Highest Amount</option>
+              <option value="amount_low">Lowest Amount</option>
+            </select>
+          </div>
+
           <!-- Desktop Table -->
           <div class="hidden lg:block overflow-x-auto">
             <table class="min-w-full text-sm text-left">
@@ -180,17 +253,31 @@
                   <th class="px-6 py-3">Customer</th>
                   <th class="px-6 py-3">Date</th>
                   <th class="px-6 py-3">Total</th>
+                  <th class="px-6 py-3">Paid</th>
                   <th class="px-6 py-3">Status</th>
                   <th class="px-6 py-3">Type</th>
+                  <th class="px-6 py-3">Payment</th>
                   <th class="px-6 py-3">Actions</th>
                 </tr>
               </thead>
-              <tbody id="ordersTable"></tbody>
+              <tbody id="ordersTable">
+                <tr>
+                  <td colspan="9" class="px-6 py-8 text-center text-gray-500">
+                    <div class="loading-spinner mx-auto mb-2"></div>
+                    Loading orders...
+                  </td>
+                </tr>
+              </tbody>
             </table>
           </div>
 
           <!-- Mobile Card View -->
-          <div id="ordersTableMobile" class="lg:hidden space-y-3"></div>
+          <div id="ordersTableMobile" class="lg:hidden space-y-3">
+            <div class="text-center py-8 text-gray-500">
+              <div class="loading-spinner mx-auto mb-2"></div>
+              Loading orders...
+            </div>
+          </div>
         </div>
       </main>
     </div>
@@ -198,221 +285,287 @@
 
   <!-- Order Modal -->
   <div id="orderModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden z-50">
-    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto mx-2">
-      <h3 class="text-lg sm:text-xl font-semibold mb-4 text-responsive">Order Details</h3>
-      <div class="space-y-3 text-responsive-sm">
-        <div>
-          <p class="text-sm text-gray-500">Order ID</p>
-          <p id="modalOrderId" class="font-medium"></p>
+    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-2xl modal-content mx-2">
+      <div class="flex justify-between items-start mb-4">
+        <h3 class="text-lg sm:text-xl font-semibold text-responsive">Order Details</h3>
+        <button onclick="toggleModal()" class="text-gray-500 hover:text-gray-700">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-responsive-sm">
+        <div class="space-y-3">
+          <div>
+            <p class="text-sm text-gray-500">Order ID</p>
+            <p id="modalOrderId" class="font-medium text-lg"></p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Customer</p>
+            <p id="modalCustomer" class="font-medium"></p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Email</p>
+            <p id="modalEmail" class="font-medium text-blue-600"></p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Date & Time</p>
+            <p id="modalDate" class="font-medium"></p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Order Type</p>
+            <p id="modalType" class="font-medium"></p>
+          </div>
         </div>
-        <div>
-          <p class="text-sm text-gray-500">Customer</p>
-          <p id="modalCustomer" class="font-medium"></p>
-        </div>
-        <div>
-          <p class="text-sm text-gray-500">Date & Time</p>
-          <p id="modalDate" class="font-medium"></p>
-        </div>
-        <div>
-          <p class="text-sm text-gray-500">Order Type</p>
-          <p id="modalType" class="font-medium"></p>
-        </div>
-        <div id="modalAddressContainer">
-          <p class="text-sm text-gray-500">Delivery Address</p>
-          <p id="modalAddress" class="font-medium"></p>
-        </div>
-        <div id="modalPickupContainer" class="hidden">
-          <p class="text-sm text-gray-500">Pickup Date/Time</p>
-          <p id="modalPickup" class="font-medium"></p>
-        </div>
-        <div>
-          <p class="text-sm text-gray-500">Payment Method</p>
-          <p id="modalPayment" class="font-medium"></p>
-        </div>
-        <div>
-          <p class="text-sm text-gray-500">Status</p>
-          <p id="modalStatus" class="font-medium"></p>
-        </div>
-        <div class="pt-3 border-t">
-          <p class="text-sm text-gray-500">Items Ordered</p>
-          <ul id="modalItems" class="mt-2 space-y-2"></ul>
-        </div>
-        <div class="pt-3 border-t">
-          <p class="text-sm text-gray-500">Total Amount</p>
-          <p id="modalTotal" class="text-lg sm:text-xl font-bold text-blue-700"></p>
-        </div>
-        <div>
-          <p class="text-sm text-gray-500">Amount Paid</p>
-          <p id="modalPaid" class="text-lg sm:text-xl font-bold text-green-600"></p>
+
+        <div class="space-y-3">
+          <div>
+            <p class="text-sm text-gray-500">Status</p>
+            <span id="modalStatus" class="status-badge"></span>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Payment Method</p>
+            <p id="modalPayment" class="font-medium capitalize"></p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Transaction Reference</p>
+            <p id="modalTransactionRef" class="font-medium font-mono text-sm bg-gray-100 px-2 py-1 rounded"></p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Total Amount</p>
+            <p id="modalTotal" class="text-lg font-bold text-blue-700"></p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Amount Paid</p>
+            <p id="modalPaid" class="text-lg font-bold text-green-600"></p>
+          </div>
         </div>
       </div>
-      <div class="mt-4 sm:mt-6 flex justify-end">
-        <button onclick="toggleModal()" class="bg-gray-300 px-3 sm:px-4 py-1 sm:py-2 rounded hover:bg-gray-400 text-responsive-sm">Close</button>
+
+      <div class="mt-4">
+        <div id="modalAddressContainer">
+          <p class="text-sm text-gray-500">Delivery Address</p>
+          <p id="modalAddress" class="font-medium bg-blue-50 p-3 rounded-lg mt-1"></p>
+        </div>
+        <div id="modalPickupContainer" class="hidden">
+          <p class="text-sm text-gray-500">Pickup Details</p>
+          <p id="modalPickup" class="font-medium bg-purple-50 p-3 rounded-lg mt-1"></p>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-4 border-t">
+        <p class="text-sm text-gray-500 mb-3">Items Ordered</p>
+        <div id="modalItems" class="order-items space-y-2 bg-gray-50 p-3 rounded-lg"></div>
+      </div>
+
+      <div class="mt-6 pt-4 border-t flex flex-col sm:flex-row gap-2 justify-end">
+        <div id="modalActions" class="flex gap-2 flex-wrap"></div>
+        <button onclick="toggleModal()" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 text-responsive-sm">Close</button>
       </div>
     </div>
   </div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    // Import Firebase from shared.js for security
+    import { db, auth } from './shared.js';
     import {
       getFirestore, collection, doc, getDoc, updateDoc,
-      onSnapshot, query, orderBy
+      onSnapshot, query, orderBy, where
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBPONiic8kjN_WBB66r6y04zDB6mI1dTYw",
-      authDomain: "flexxmart-5127c.firebaseapp.com",
-      projectId: "flexxmart-5127c",
-      storageBucket: "flexxmart-5127c.appspot.com",
-      messagingSenderId: "220683612360",
-      appId: "1:220683612360:web:9898850a45983dd31475fd"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
     const ordersTable = document.getElementById("ordersTable");
     const ordersTableMobile = document.getElementById("ordersTableMobile");
     const modal = document.getElementById("orderModal");
+    const searchInput = document.getElementById("searchInput");
+    const sortSelect = document.getElementById("sortSelect");
+    const totalOrdersEl = document.getElementById("totalOrders");
+    
     let allOrders = [];
+    let filteredOrders = [];
+    let unsubscribe = null;
 
     function toggleModal(order = null) {
       if (order) {
-        document.getElementById("modalOrderId").textContent = order.id;
-        document.getElementById("modalCustomer").textContent = order.customerName;
-        document.getElementById("modalDate").textContent = new Date(order.timestamp).toLocaleString();
-        document.getElementById("modalType").textContent = order.orderType === 'delivery' ? 'Delivery' : 'Pickup';
+        // Populate modal with order details
+        document.getElementById("modalOrderId").textContent = order.orderId || order.id;
+        document.getElementById("modalCustomer").textContent = order.customerName || 'Unknown Customer';
+        document.getElementById("modalEmail").textContent = order.userEmail || 'No email provided';
+        document.getElementById("modalDate").textContent = new Date(order.createdAt || order.timestamp).toLocaleString();
+        document.getElementById("modalType").textContent = order.orderType === 'delivery' ? 'Home Delivery' : 'Store Pickup';
         document.getElementById("modalPayment").textContent = order.paymentMethod || 'N/A';
-        document.getElementById("modalStatus").textContent = order.status.charAt(0).toUpperCase() + order.status.slice(1);
-        document.getElementById("modalTotal").textContent = `$${order.total.toFixed(2)}`;
+        document.getElementById("modalTransactionRef").textContent = order.transactionRef || 'Not provided';
+        document.getElementById("modalTotal").textContent = `$${(order.totalAmount || 0).toFixed(2)}`;
         document.getElementById("modalPaid").textContent = `$${(order.amountPaid || 0).toFixed(2)}`;
 
+        // Status badge
+        const statusEl = document.getElementById("modalStatus");
+        const status = order.orderStatus || order.status || 'pending';
+        statusEl.textContent = status.replace('_', ' ').toUpperCase();
+        statusEl.className = `status-badge status-${status}`;
 
+        // Address or Pickup details
         if (order.orderType === 'delivery') {
           document.getElementById("modalAddressContainer").classList.remove("hidden");
           document.getElementById("modalPickupContainer").classList.add("hidden");
-          document.getElementById("modalAddress").textContent = order.deliveryAddress || 'Not specified';
+          document.getElementById("modalAddress").textContent = order.deliveryAddress || 'No address provided';
         } else {
           document.getElementById("modalAddressContainer").classList.add("hidden");
           document.getElementById("modalPickupContainer").classList.remove("hidden");
-          document.getElementById("modalPickup").textContent = `${order.pickupDate || ''} ${order.pickupTime || ''}`;
+          const pickupText = order.pickupDate && order.pickupTime 
+            ? `${order.pickupDate} at ${order.pickupTime}`
+            : 'Pickup details not specified';
+          document.getElementById("modalPickup").textContent = pickupText;
         }
 
+        // Items list
         const itemsList = document.getElementById("modalItems");
         itemsList.innerHTML = '';
-        order.items.forEach(item => {
-          const li = document.createElement('li');
-          li.className = 'flex justify-between text-responsive-sm';
-          const qty = parseInt(item.quantity) || 1;
-          const price = parseFloat(item.price) || 0;
-          const itemTotal = price * qty;
+        
+        if (order.items && order.items.length > 0) {
+          order.items.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0';
+            const qty = parseInt(item.quantity) || 1;
+            const price = parseFloat(item.price) || 0;
+            const itemTotal = price * qty;
 
-          li.innerHTML = `<span>${item.name || 'Unnamed'} (x${qty})</span><span>$${itemTotal.toFixed(2)}</span>`;
-          itemsList.appendChild(li);
-        });
+            div.innerHTML = `
+              <div>
+                <span class="font-medium">${item.name || 'Unnamed Product'}</span>
+                <span class="text-gray-500 text-sm ml-2">(x${qty})</span>
+              </div>
+              <span class="font-semibold">$${itemTotal.toFixed(2)}</span>
+            `;
+            itemsList.appendChild(div);
+          });
+        } else {
+          itemsList.innerHTML = '<p class="text-gray-500 text-center py-4">No items found</p>';
+        }
+
+        // Action buttons
+        const actionsEl = document.getElementById("modalActions");
+        actionsEl.innerHTML = getActionButtons(order, false);
       }
       modal.classList.toggle("hidden");
     }
 
     async function setupRealTimeOrders() {
-      ordersTable.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center">Loading orders...</td></tr>';
-      ordersTableMobile.innerHTML = '<div class="text-center py-4">Loading orders...</div>';
+      try {
+        if (unsubscribe) unsubscribe();
 
-      const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
-      onSnapshot(q, async (ordersSnapshot) => {
-        const orderPromises = ordersSnapshot.docs.map(async (docSnap) => {
-          const orderData = docSnap.data();
-          let customerName = "Unknown";
-
-          if (orderData.userId) {
-            try {
-              const userSnap = await getDoc(doc(db, "users", orderData.userId));
-              if (userSnap.exists()) {
-                const userData = userSnap.data();
-                customerName = `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || userData.name || "Customer";
-              }
-            } catch (err) {
-              console.warn("Error fetching user data:", err);
-            }
+        const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+        
+        unsubscribe = onSnapshot(q, async (ordersSnapshot) => {
+          if (ordersSnapshot.empty) {
+            allOrders = [];
+            renderOrders([]);
+            totalOrdersEl.textContent = "0";
+            return;
           }
 
-          const itemsArray = orderData.items || orderData.itemsOrdered || orderData.cart || [];
-          const calculatedTotal = itemsArray.reduce((sum, item) => {
-            const price = parseFloat(item.price) || 0;
-            const qty = parseInt(item.quantity) || 1;
-            return sum + (price * qty);
-          }, 0);
+          const orderPromises = ordersSnapshot.docs.map(async (docSnap) => {
+            const orderData = docSnap.data();
+            let customerName = "Unknown Customer";
 
-          return {
-            id: docSnap.id,
-            ...orderData,
-            customerName,
-            status: orderData.status || 'pending',
-            orderType: orderData.orderType || 'delivery',
-            total: orderData.total && !isNaN(parseFloat(orderData.total))
-              ? parseFloat(orderData.total)
-              : calculatedTotal,
-            items: itemsArray
-          };
+            // Fetch customer details
+            if (orderData.userId) {
+              try {
+                const userSnap = await getDoc(doc(db, "users", orderData.userId));
+                if (userSnap.exists()) {
+                  const userData = userSnap.data();
+                  customerName = `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || 
+                               userData.displayName || 
+                               userData.name || 
+                               "Customer";
+                }
+              } catch (err) {
+                console.warn("Error fetching user data:", err);
+              }
+            }
+
+            return {
+              id: docSnap.id,
+              ...orderData,
+              customerName,
+              // Normalize status field
+              status: orderData.orderStatus || orderData.status || 'pending',
+              // Ensure we have the right timestamp field
+              timestamp: orderData.createdAt || orderData.timestamp || new Date().toISOString()
+            };
+          });
+
+          allOrders = await Promise.all(orderPromises);
+          filteredOrders = [...allOrders];
+          
+          totalOrdersEl.textContent = allOrders.length.toString();
+          renderOrders(allOrders);
+        }, (error) => {
+          console.error("Error listening to orders:", error);
+          showError("Error loading orders. Please refresh the page.");
         });
 
-        allOrders = await Promise.all(orderPromises);
-        allOrders.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-        if (allOrders.length === 0) {
-          ordersTable.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">No orders found</td></tr>';
-          ordersTableMobile.innerHTML = '<div class="text-center py-4 text-gray-500">No orders found</div>';
-          return;
-        }
-
-        renderOrders(allOrders);
-      });
+      } catch (error) {
+        console.error("Error setting up real-time orders:", error);
+        showError("Failed to load orders");
+      }
     }
 
     function renderOrders(orders) {
+      // Clear existing content
       ordersTable.innerHTML = '';
       ordersTableMobile.innerHTML = '';
+
+      if (orders.length === 0) {
+        ordersTable.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-gray-500">No orders found</td></tr>';
+        ordersTableMobile.innerHTML = '<div class="text-center py-8 text-gray-500">No orders found</div>';
+        return;
+      }
 
       orders.forEach(order => {
         const date = new Date(order.timestamp).toLocaleDateString();
         const time = new Date(order.timestamp).toLocaleTimeString();
-        const statusColor = getStatusColor(order.status);
+        const status = order.status || 'pending';
+        const statusClass = getStatusClass(status);
         const typeBadge = order.orderType === 'delivery'
           ? '<span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Delivery</span>'
           : '<span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">Pickup</span>';
 
+        // Desktop table row
         const row = document.createElement("tr");
         row.className = "border-t hover:bg-gray-50";
         row.innerHTML = `
-          <td class="px-6 py-4 font-medium">${order.id}</td>
+          <td class="px-6 py-4 font-medium">${order.orderId || order.id}</td>
           <td class="px-6 py-4">${order.customerName}</td>
           <td class="px-6 py-4">${date}<br><span class="text-xs text-gray-500">${time}</span></td>
-          <td class="px-6 py-4 font-semibold">$${order.total.toFixed(2)}</td>
-          <td class="px-6 py-4 font-semibold ${statusColor}">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</td>
+          <td class="px-6 py-4 font-semibold">$${(order.totalAmount || 0).toFixed(2)}</td>
+          <td class="px-6 py-4 font-semibold text-green-600">$${(order.amountPaid || 0).toFixed(2)}</td>
           <td class="px-6 py-4">
-            <div class="relative" style="top: 8px;">
-              ${typeBadge}
-            </div>
+            <span class="status-badge status-${status}">${status.replace('_', ' ').toUpperCase()}</span>
           </td>
-
+          <td class="px-6 py-4">${typeBadge}</td>
+          <td class="px-6 py-4 capitalize">${order.paymentMethod || 'N/A'}</td>
           <td class="px-6 py-4">
             <div class="flex gap-2 flex-wrap">
               ${getActionButtons(order)}
-              <button onclick="toggleModal(${JSON.stringify(order).replace(/"/g, '&quot;')})" class="bg-blue-600 text-white px-3 py-1 rounded text-sm">View</button>
+              <button onclick="showOrderModal('${order.id}')" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">View</button>
             </div>
           </td>`;
         ordersTable.appendChild(row);
 
+        // Mobile card
         const card = document.createElement("div");
-        card.className = "bg-white rounded-md p-3 shadow";
+        card.className = `bg-white rounded-md p-3 shadow border-l-4 ${getPriorityClass(status)}`;
         card.innerHTML = `
-          <div class="flex justify-between items-start">
+          <div class="flex justify-between items-start mb-2">
             <div>
-              <h3 class="font-semibold text-responsive">Order #${order.id}</h3>
+              <h3 class="font-semibold text-responsive">#${order.orderId || order.id}</h3>
               <p class="text-sm text-gray-600 text-responsive-sm">${order.customerName}</p>
             </div>
-            <span class="${statusColor} font-semibold text-responsive-sm">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span>
+            <span class="status-badge status-${status}">${status.replace('_', ' ').toUpperCase()}</span>
           </div>
-          <div class="mt-2 grid grid-cols-2 gap-2 text-responsive-sm">
+          <div class="grid grid-cols-2 gap-2 text-responsive-sm mb-3">
             <div>
               <p class="text-xs text-gray-500">Date</p>
               <p>${date}</p>
@@ -423,99 +576,178 @@
             </div>
             <div>
               <p class="text-xs text-gray-500">Total</p>
-              <p class="font-semibold text-blue-700">$${order.total.toFixed(2)}</p>
+              <p class="font-semibold text-blue-700">${(order.totalAmount || 0).toFixed(2)}</p>
             </div>
-            <div class="flex items-end gap-1">
-              ${getActionButtons(order, true)}
-              <button onclick="toggleModal(${JSON.stringify(order).replace(/"/g, '&quot;')})" class="bg-blue-600 text-white px-2 py-1 rounded text-xs">Details</button>
+            <div>
+              <p class="text-xs text-gray-500">Paid</p>
+              <p class="font-semibold text-green-600">${(order.amountPaid || 0).toFixed(2)}</p>
             </div>
+          </div>
+          <div class="flex gap-1 flex-wrap">
+            ${getActionButtons(order, true)}
+            <button onclick="showOrderModal('${order.id}')" class="bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700">Details</button>
           </div>`;
         ordersTableMobile.appendChild(card);
       });
     }
 
-    function getStatusColor(status) {
-      switch (status) {
-        case 'pending': return 'text-yellow-600';
-        case 'confirmed': return 'text-blue-600';
-        case 'completed':
-        case 'delivered':
-        case 'pickedup': return 'text-green-600';
-        case 'cancelled': return 'text-red-600';
-        default: return 'text-gray-600';
-      }
+    function getStatusClass(status) {
+      const statusClasses = {
+        'pending': 'text-yellow-600',
+        'pending_verification': 'text-orange-600',
+        'confirmed': 'text-blue-600',
+        'completed': 'text-green-600',
+        'delivered': 'text-green-600',
+        'pickedup': 'text-green-600',
+        'cancelled': 'text-red-600'
+      };
+      return statusClasses[status] || 'text-gray-600';
+    }
+
+    function getPriorityClass(status) {
+      if (['pending', 'pending_verification'].includes(status)) return 'priority-high';
+      if (status === 'confirmed') return 'priority-medium';
+      return 'priority-low';
     }
 
     function getActionButtons(order, isMobile = false) {
       let buttons = '';
       const btnClass = isMobile ? 'text-xs px-2 py-1 btn-small-wide' : 'text-sm px-3 py-1';
+      const status = order.status || 'pending';
 
-      if (order.status === "pending") {
+      if (status === "pending" || status === "pending_verification") {
         buttons += `
-          <button onclick="updateOrderStatus('${order.id}', 'confirmed')" class="bg-green-600 text-white rounded ${btnClass}">Confirm</button>
-          <button onclick="updateOrderStatus('${order.id}', 'cancelled')" class="bg-red-600 text-white rounded ${btnClass}">Cancel</button>`;
-      } else if (order.status === "confirmed") {
+          <button onclick="updateOrderStatus('${order.id}', 'confirmed')" 
+                  class="bg-green-600 text-white rounded ${btnClass} hover:bg-green-700">Confirm</button>
+          <button onclick="updateOrderStatus('${order.id}', 'cancelled')" 
+                  class="bg-red-600 text-white rounded ${btnClass} hover:bg-red-700">Cancel</button>`;
+      } else if (status === "confirmed") {
         const action = order.orderType === 'delivery' ? 'delivered' : 'pickedup';
         const label = order.orderType === 'delivery' ? 'Delivered' : 'Picked Up';
-        buttons += `<button onclick="updateOrderStatus('${order.id}', '${action}')" class="bg-green-700 text-white rounded ${btnClass}">${isMobile ? label : 'Mark ' + label}</button>`;
-      } else if (order.status === "cancelled") {
-        buttons += `<button onclick="updateOrderStatus('${order.id}', 'pending')" class="bg-yellow-500 text-white rounded ${btnClass}">Revise</button>`;
+        buttons += `<button onclick="updateOrderStatus('${order.id}', '${action}')" 
+                          class="bg-green-700 text-white rounded ${btnClass} hover:bg-green-800">${isMobile ? label : 'Mark ' + label}</button>`;
+      } else if (status === "cancelled") {
+        buttons += `<button onclick="updateOrderStatus('${order.id}', 'pending')" 
+                          class="bg-yellow-500 text-white rounded ${btnClass} hover:bg-yellow-600">Reopen</button>`;
       }
 
-      return `<div class="flex flex-wrap gap-2 btn-group-mobile">${buttons}</div>`;
+      return `<div class="flex flex-wrap gap-1 btn-group-mobile">${buttons}</div>`;
     }
 
+    function showError(message) {
+      ordersTable.innerHTML = `<tr><td colspan="9" class="px-6 py-8 text-center text-red-500">${message}</td></tr>`;
+      ordersTableMobile.innerHTML = `<div class="text-center py-8 text-red-500">${message}</div>`;
+    }
+
+    // Filter and search functions
     window.filterOrders = (status) => {
       if (status === 'completed') {
-        const filtered = allOrders.filter(o => ['delivered', 'pickedup'].includes(o.status));
-        renderOrders(filtered);
+        filteredOrders = allOrders.filter(o => ['delivered', 'pickedup', 'completed'].includes(o.status));
       } else if (status) {
-        const filtered = allOrders.filter(o => o.status === status);
-        renderOrders(filtered);
+        filteredOrders = allOrders.filter(o => o.status === status);
       } else {
-        renderOrders(allOrders);
+        filteredOrders = [...allOrders];
       }
+      
+      applySearch();
+      applySorting();
     };
+
+    function applySearch() {
+      const searchTerm = searchInput.value.toLowerCase().trim();
+      
+      if (searchTerm) {
+        filteredOrders = filteredOrders.filter(order => 
+          (order.orderId || order.id).toLowerCase().includes(searchTerm) ||
+          order.customerName.toLowerCase().includes(searchTerm) ||
+          (order.userEmail || '').toLowerCase().includes(searchTerm)
+        );
+      }
+    }
+
+    window.applySorting = () => {
+      const sortValue = sortSelect.value;
+      
+      filteredOrders.sort((a, b) => {
+        switch (sortValue) {
+          case 'oldest':
+            return new Date(a.timestamp) - new Date(b.timestamp);
+          case 'amount_high':
+            return (b.totalAmount || 0) - (a.totalAmount || 0);
+          case 'amount_low':
+            return (a.totalAmount || 0) - (b.totalAmount || 0);
+          case 'newest':
+          default:
+            return new Date(b.timestamp) - new Date(a.timestamp);
+        }
+      });
+      
+      renderOrders(filteredOrders);
+    };
+
+    // Search input handler
+    searchInput.addEventListener('input', () => {
+      filteredOrders = [...allOrders];
+      applySearch();
+      applySorting();
+    });
 
     window.updateOrderStatus = async (orderId, newStatus) => {
       try {
-        await updateDoc(doc(db, "orders", orderId), { status: newStatus });
-        // ❌ No need to manually reload — onSnapshot handles it
+        await updateDoc(doc(db, "orders", orderId), { 
+          orderStatus: newStatus,
+          status: newStatus,  // Keep both for compatibility
+          updatedAt: new Date().toISOString()
+        });
+        console.log(`Order ${orderId} status updated to ${newStatus}`);
       } catch (error) {
         console.error("Error updating order status:", error);
-        alert("Failed to update order status");
+        alert("Failed to update order status. Please try again.");
+      }
+    };
+
+    window.showOrderModal = (orderId) => {
+      const order = allOrders.find(o => o.id === orderId);
+      if (order) {
+        toggleModal(order);
       }
     };
 
     window.toggleModal = toggleModal;
-    window.setupRealTimeOrders = setupRealTimeOrders;
     window.filterOrders = filterOrders;
+    window.applySorting = applySorting;
     window.updateOrderStatus = updateOrderStatus;
+    window.showOrderModal = showOrderModal;
 
-   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-    const auth = getAuth(app);
-
-    // Admin Access Control
+    // Admin Access Control and Initialization
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "admin_login.html";
         return;
       }
 
-      const adminDoc = await getDoc(doc(db, "admins", user.uid));
-      if (!adminDoc.exists() || !adminDoc.data().isActive) {
-        alert("Access denied: Not an active admin.");
-        await signOut(auth);
+      try {
+        const adminDoc = await getDoc(doc(db, "admins", user.uid));
+        if (!adminDoc.exists() || !adminDoc.data().isActive) {
+          alert("Access denied: Not an active admin.");
+          await signOut(auth);
+          window.location.href = "admin_login.html";
+          return;
+        }
+
+        // Initialize orders loading
+        setupRealTimeOrders();
+      } catch (error) {
+        console.error("Error checking admin status:", error);
+        alert("Error verifying admin access.");
         window.location.href = "admin_login.html";
-        return;
       }
-
-      // ✅ Now safe to load orders
-      setupRealTimeOrders();
     });
-    </script>
 
-
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+      if (unsubscribe) unsubscribe();
+    });
+  </script>
 </body>
 </html>

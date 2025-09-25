@@ -5,20 +5,47 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flexxcart | Payment Reference</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="style.css">
   <script type="module" src="shared.js"></script>
   <script src="inject.js" defer></script>
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #ffe6ff;
+    :root {
+      --primary-color: #d60000;
+      --primary-hover: #b30000;
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --text-dark: #333;
+      --text-light: #666;
+      --text-muted: #999;
+      --border-color: #e0e0e0;
+      --bg-light: #f8f9fa;
+      --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --shadow-light: 0 2px 10px rgba(0,0,0,0.1);
+      --shadow-medium: 0 4px 20px rgba(0,0,0,0.15);
+      --shadow-heavy: 0 10px 40px rgba(0,0,0,0.2);
+      --border-radius: 12px;
+      --transition: all 0.3s ease;
+    }
+
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    body {
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
     }
 
     main {
@@ -27,238 +54,742 @@
       justify-content: center;
       align-items: center;
       padding: 40px 20px;
+      min-height: 80vh;
     }
 
-    .reference-card {
-      margin-top: -30px;
+    .payment-container {
       background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-      max-width: 440px;
+      padding: 40px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-heavy);
+      max-width: 500px;
       width: 100%;
+      position: relative;
+      border: 1px solid var(--border-color);
     }
 
-    .reference-card h2 {
-      margin-top: 0;
-      margin-bottom: 10px;
+    .payment-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--bg-gradient);
+      border-radius: var(--border-radius) var(--border-radius) 0 0;
+    }
+
+    .payment-header {
       text-align: center;
-      font-size: 1.4rem;
+      margin-bottom: 30px;
     }
 
-    .reference-card p {
+    .payment-header i {
+      font-size: 3rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+
+    .payment-header h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .payment-header p {
+      color: var(--text-light);
       font-size: 0.95rem;
-      color: #333;
-      margin-bottom: 20px;
-      line-height: 1.5;
+      line-height: 1.6;
+    }
+
+    .order-summary {
+      background: var(--bg-light);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      border-left: 4px solid var(--primary-color);
+    }
+
+    .order-summary h3 {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .order-detail {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .order-detail span:first-child {
+      color: var(--text-light);
+    }
+
+    .order-detail span:last-child {
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+
+    .total-amount {
+      border-top: 1px solid var(--border-color);
+      padding-top: 12px;
+      margin-top: 12px;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .total-amount span:last-child {
+      color: var(--primary-color);
+      font-size: 1.2rem;
+    }
+
+    .payment-methods {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+
+    .payment-methods h4 {
+      color: var(--text-dark);
+      margin-bottom: 12px;
+      font-size: 1rem;
+    }
+
+    .payment-method {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .payment-method i {
+      width: 20px;
+      color: var(--primary-color);
+    }
+
+    .payment-method strong {
+      min-width: 80px;
     }
 
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
 
     .form-group label {
       display: block;
       margin-bottom: 8px;
       font-weight: 500;
+      color: var(--text-dark);
+      font-size: 0.9rem;
     }
 
-    .form-group input {
+    .form-control {
       width: 100%;
-      padding: 10px;
-      font-size: 1rem;
-      border: 1px solid #ccc;
+      padding: 15px;
+      font-size: 0.95rem;
+      border: 2px solid var(--border-color);
       border-radius: 8px;
+      transition: var(--transition);
+      background-color: white;
     }
 
-    button.submit-btn {
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(214, 0, 0, 0.1);
+    }
+
+    .form-control::placeholder {
+      color: var(--text-muted);
+    }
+
+    .submit-btn {
       width: 100%;
-      background-color: #d60000;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
       color: white;
       border: none;
-      padding: 12px;
+      padding: 16px 20px;
       font-size: 1rem;
+      font-weight: 600;
       border-radius: 8px;
-      font-weight: bold;
       cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, var(--primary-hover), #990000);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     .toast {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #d60000;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
       color: white;
-      padding: 12px 20px;
-      border-radius: 6px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      padding: 15px 20px;
+      border-radius: 8px;
+      font-weight: 500;
+      box-shadow: var(--shadow-medium);
       opacity: 0;
-      transition: opacity 0.3s;
-      pointer-events: none;
-      z-index: 1000;
+      transform: translateX(100px);
+      transition: all 0.4s ease;
+      z-index: 9999;
+      max-width: 300px;
     }
 
     .toast.show {
       opacity: 1;
-      pointer-events: auto;
+      transform: translateX(0);
     }
 
-    .justified-text {
-      text-align: justify;
-      text-justify: inter-word;
-      line-height: 1.6;
-      margin-left: 0px;
-      max-width: 800px;
-      font-size: 1rem;
+    .toast.success {
+      background: linear-gradient(135deg, var(--success-color), #20c997);
     }
 
+    .toast.error {
+      background: linear-gradient(135deg, #dc3545, #c82333);
+    }
+
+    .security-note {
+      background: #e8f5e8;
+      border: 1px solid #c8e6c9;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+      color: #2e7d32;
+    }
+
+    .security-note i {
+      color: var(--success-color);
+      margin-right: 8px;
+    }
+
+    .help-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    .no-order {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-light);
+    }
+
+    .no-order i {
+      font-size: 4rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .no-order h3 {
+      color: var(--text-dark);
+      margin-bottom: 15px;
+    }
+
+    .btn-secondary {
+      background: var(--text-light);
+      color: white;
+      padding: 12px 25px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: var(--transition);
+      display: inline-block;
+      margin-top: 15px;
+    }
+
+    .btn-secondary:hover {
+      background: var(--text-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
-      .reference-card{
-        margin-top: 50px;
+      main {
+        padding: 20px 15px;
       }
 
-
-    @media (max-width: 430px) {
-      .reference-card{
-        margin-top: 60px;
+      .payment-container {
+        padding: 30px 25px;
+        margin: 10px;
       }
 
-      .reference-card p{
-        font-size: 14px;
+      .payment-header h2 {
+        font-size: 1.5rem;
+      }
+
+      .payment-header i {
+        font-size: 2.5rem;
+      }
+
+      .toast {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        max-width: none;
       }
     }
 
-    @media (max-width: 390px) {
-      .reference-card h2{
-        font-size: 20px;
+    @media (max-width: 480px) {
+      .payment-container {
+        padding: 25px 20px;
+        margin: 5px;
       }
+
+      .payment-header {
+        margin-bottom: 25px;
+      }
+
+      .payment-header h2 {
+        font-size: 1.3rem;
+      }
+
+      .payment-header p {
+        font-size: 0.9rem;
+      }
+
+      .order-summary {
+        padding: 15px;
+      }
+
+      .payment-methods {
+        padding: 15px;
+      }
+
+      .form-control {
+        padding: 12px;
+        font-size: 0.9rem;
+      }
+
+      .submit-btn {
+        padding: 14px 18px;
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .payment-container {
+        padding: 20px 15px;
+      }
+
+      .order-detail {
+        font-size: 0.85rem;
+      }
+
+      .payment-method {
+        font-size: 0.85rem;
+      }
+    }
+
+    /* Loading state for entire page */
+    .page-loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .page-loading .payment-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--border-radius);
     }
   </style>
 </head>
 
 <body>
   <div id="header-container"></div>
+  
   <main>
-    <div class="reference-card">
-      <h2>Enter Payment Reference</h2>
-      <p = class = "justified-text">Please make your payment to the merchant account shown below. Once payment is made, enter your transaction reference number below to complete your order confirmation.</p>
-      <p><strong>Ecocash:</strong> 123456 (EcoCash)<br><strong>Innbucks:</strong> flexxcartzw</p>
+    <div class="payment-container" id="paymentContainer">
+      <div class="no-order" id="noOrderSection" style="display: none;">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>No Order Found</h3>
+        <p>Please complete your checkout process first.</p>
+        <a href="checkout.html" class="btn-secondary">
+          <i class="fas fa-shopping-cart"></i> Go to Checkout
+        </a>
+      </div>
 
-      <form id="refForm">
-         <div class="form-group">
-          <label for="amountInput">Amount Paid (USD)</label>
-          <input type="number" id="amountInput" placeholder="Enter the amount paid" required />
+      <div id="paymentSection">
+        <div class="payment-header">
+          <i class="fas fa-credit-card"></i>
+          <h2>Complete Your Payment</h2>
+          <p>Please make your payment using the details below, then submit your transaction reference to confirm your order.</p>
         </div>
-        <div class="form-group">
-          <label for="refInput">Transaction Reference Number</label>
-          <input type="text" id="refInput" placeholder="e.g. EC123456ZWL" required />
-        </div>
-        <button type="submit" class="submit-btn" id="submitRefBtn">
-          <span id="submitText">Submit Reference</span>
-          <span id="submitSpinner" style="display: none; margin-left: 8px;">
-            <i class="fas fa-spinner fa-spin"></i>
-          </span>
-        </button>
-      </form>
 
+        <div class="order-summary" id="orderSummary">
+          <h3><i class="fas fa-receipt"></i> Order Summary</h3>
+          <div class="order-detail">
+            <span>Order ID:</span>
+            <span id="orderIdDisplay">Loading...</span>
+          </div>
+          <div class="order-detail">
+            <span>Order Type:</span>
+            <span id="orderTypeDisplay">-</span>
+          </div>
+          <div class="order-detail">
+            <span>Payment Method:</span>
+            <span id="paymentMethodDisplay">-</span>
+          </div>
+          <div class="order-detail total-amount">
+            <span>Total Amount:</span>
+            <span id="totalAmountDisplay">$0.00</span>
+          </div>
+        </div>
+
+        <div class="payment-methods">
+          <h4><i class="fas fa-mobile-alt"></i> Payment Details</h4>
+          <div class="payment-method">
+            <i class="fas fa-mobile-alt"></i>
+            <strong>EcoCash:</strong>
+            <span>0123456789</span>
+          </div>
+          <div class="payment-method">
+            <i class="fas fa-university"></i>
+            <strong>Innbucks:</strong>
+            <span>flexxcartzw</span>
+          </div>
+        </div>
+
+        <div class="security-note">
+          <i class="fas fa-shield-alt"></i>
+          <strong>Secure Payment:</strong> Your transaction is protected. Only submit the reference after completing payment.
+        </div>
+
+        <form id="refForm">
+          <div class="form-group">
+            <label for="amountInput">
+              <i class="fas fa-dollar-sign"></i> Amount Paid (USD)
+            </label>
+            <input 
+              type="number" 
+              id="amountInput" 
+              class="form-control"
+              placeholder="Enter the exact amount paid" 
+              step="0.01"
+              min="0"
+              required 
+            />
+            <div class="help-text">Enter the exact amount you paid to the merchant account</div>
+          </div>
+
+          <div class="form-group">
+            <label for="refInput">
+              <i class="fas fa-hashtag"></i> Transaction Reference Number
+            </label>
+            <input 
+              type="text" 
+              id="refInput" 
+              class="form-control"
+              placeholder="e.g. EC123456789 or IN987654321" 
+              required 
+            />
+            <div class="help-text">Enter the reference number from your payment confirmation SMS</div>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submitRefBtn">
+            <span id="submitText">Submit Payment Reference</span>
+            <span id="submitSpinner" class="loading" style="display: none;"></span>
+          </button>
+        </form>
+      </div>
     </div>
   </main>
+
   <div id="toast" class="toast"></div>
   <div id="footer-container"></div>
 
   <script type="module">
     import { db, auth } from './shared.js';
-    import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { 
+      doc, 
+      setDoc, 
+      getDoc, 
+      addDoc, 
+      collection,
+      getDocs,
+      query,
+      orderBy,
+      limit
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+    // Initialize elements and variables
     const form = document.getElementById("refForm");
     const toast = document.getElementById("toast");
     const amountInput = document.getElementById("amountInput");
     const refInput = document.getElementById("refInput");
+    const paymentSection = document.getElementById("paymentSection");
+    const noOrderSection = document.getElementById("noOrderSection");
+    
     const order = JSON.parse(localStorage.getItem("latestOrder"));
 
-    function showToast(message) {
+    // Toast notification function
+    function showToast(message, type = 'error') {
       toast.textContent = message;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 3000);
+      toast.className = `toast ${type} show`;
+      setTimeout(() => toast.classList.remove("show"), 4000);
     }
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const ref = refInput.value.trim();
-      const amountPaid = parseFloat(amountInput.value.trim());
+    // Generate sequential order ID with format: ABC12345
+    async function generateOrderId() {
+      try {
+        // Get the last order to determine the next ID
+        const ordersQuery = query(
+          collection(db, "orders"), 
+          orderBy("orderNumber", "desc"), 
+          limit(1)
+        );
+        const snapshot = await getDocs(ordersQuery);
+        
+        let nextNumber = 1;
+        
+        if (!snapshot.empty) {
+          const lastOrder = snapshot.docs[0].data();
+          const lastNumber = lastOrder.orderNumber || 0;
+          nextNumber = lastNumber + 1;
+        }
 
-      if (!ref || isNaN(amountPaid)) {
-        showToast("Please fill in all required fields.");
+        // Generate the order ID: 3 letters + 5 numbers
+        const letters = String.fromCharCode(
+          65 + Math.floor((nextNumber - 1) / (26 * 26)) % 26,
+          65 + Math.floor((nextNumber - 1) / 26) % 26,
+          65 + (nextNumber - 1) % 26
+        );
+        
+        const numbers = String(nextNumber).padStart(5, '0');
+        
+        return {
+          orderId: `${letters}${numbers}`,
+          orderNumber: nextNumber
+        };
+      } catch (error) {
+        console.error("Error generating order ID:", error);
+        // Fallback to random ID if there's an issue
+        const fallbackId = 'ORD' + Date.now().toString().slice(-8);
+        return {
+          orderId: fallbackId,
+          orderNumber: Date.now()
+        };
+      }
+    }
+
+    // Display order information
+    function displayOrderInfo() {
+      if (!order) {
+        paymentSection.style.display = 'none';
+        noOrderSection.style.display = 'block';
         return;
       }
 
-      // Extract number from total string like "$12.50"
-      const requiredAmount = parseFloat((order?.total || "").replace(/[^0-9.]/g, ""));
-      if (amountPaid < requiredAmount) {
-        showToast(`Amount must be at least $${requiredAmount.toFixed(2)}.`);
-        return;
-      }
+      // Extract amount from order total
+      const totalAmount = parseFloat((order.total || "").replace(/[^0-9.]/g, ""));
+      
+      document.getElementById('orderIdDisplay').textContent = 'Generating...';
+      document.getElementById('orderTypeDisplay').textContent = 
+        order.orderType === 'delivery' ? 'Home Delivery' : 'Store Pickup';
+      document.getElementById('paymentMethodDisplay').textContent = 
+        order.paymentMethod.charAt(0).toUpperCase() + order.paymentMethod.slice(1);
+      document.getElementById('totalAmountDisplay').textContent = order.total;
 
+      // Pre-fill the amount input
+      amountInput.value = totalAmount.toFixed(2);
+    }
+
+    // Validate payment amount
+    function validateAmount(paidAmount, requiredAmount) {
+      const tolerance = 0.01; // Allow 1 cent tolerance
+      return paidAmount >= (requiredAmount - tolerance);
+    }
+
+    // Reset button state
+    function resetSubmitButton() {
+      const btn = document.getElementById("submitRefBtn");
+      const text = document.getElementById("submitText");
+      const spinner = document.getElementById("submitSpinner");
+
+      btn.disabled = false;
+      text.textContent = "Submit Payment Reference";
+      spinner.style.display = "none";
+    }
+
+    // Set button loading state
+    function setButtonLoading() {
       const btn = document.getElementById("submitRefBtn");
       const text = document.getElementById("submitText");
       const spinner = document.getElementById("submitSpinner");
 
       btn.disabled = true;
-      text.textContent = "Submitting...";
+      text.textContent = "Processing...";
       spinner.style.display = "inline-block";
+    }
 
+    // Handle form submission
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const ref = refInput.value.trim();
+      const amountPaid = parseFloat(amountInput.value.trim());
+
+      // Validation
+      if (!ref || isNaN(amountPaid)) {
+        showToast("Please fill in all required fields.", 'error');
+        return;
+      }
+
+      if (ref.length < 5) {
+        showToast("Please enter a valid transaction reference.", 'error');
+        return;
+      }
+
+      const requiredAmount = parseFloat((order?.total || "").replace(/[^0-9.]/g, ""));
+      
+      if (!validateAmount(amountPaid, requiredAmount)) {
+        showToast(`Amount must be at least $${requiredAmount.toFixed(2)}.`, 'error');
+        return;
+      }
+
+      setButtonLoading();
+
+      // Wait for authentication
       onAuthStateChanged(auth, async (user) => {
         if (!user) {
-          showToast("You must be logged in to place an order.");
-          resetBtn();
+          showToast("Please log in to complete your order.", 'error');
+          resetSubmitButton();
           return;
         }
 
-        const items = order.cart.map(item => ({
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price
-        }));
-
-        const orderData = {
-          orderId: order.id || "ORD" + Math.floor(Math.random() * 1000000), 
-          userId: user.uid,
-          items,
-          total: requiredAmount,
-          amountPaid: amountPaid,
-          orderType: order.orderType,
-          paymentMethod: order.paymentMethod,
-          deliveryAddress: order.deliveryAddress || '',
-          pickupDate: order.pickupDate || '',
-          pickupTime: order.pickupTime || '',
-          transactionRef: ref,
-          paymentStatus: "submitted",
-          status: "pending",
-          timestamp: new Date().toISOString()
-        };
-
         try {
+          // Generate sequential order ID
+          const { orderId, orderNumber } = await generateOrderId();
+          
+          // Update display with generated order ID
+          document.getElementById('orderIdDisplay').textContent = orderId;
+
+          // Prepare order data
+          const items = order.cart.map(item => ({
+            name: item.name || 'Unknown Product',
+            quantity: item.quantity || 1,
+            price: parseFloat(item.price) || 0
+          }));
+
+          const orderData = {
+            orderId: orderId,
+            orderNumber: orderNumber,
+            userId: user.uid,
+            userEmail: user.email,
+            items: items,
+            itemCount: items.length,
+            totalAmount: requiredAmount,
+            amountPaid: amountPaid,
+            orderType: order.orderType || 'pickup',
+            paymentMethod: order.paymentMethod || 'ecocash',
+            deliveryAddress: order.deliveryAddress || '',
+            pickupDate: order.pickupDate || '',
+            pickupTime: order.pickupTime || '',
+            transactionRef: ref,
+            paymentStatus: "pending_verification",
+            orderStatus: "pending",
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          };
+
+          // Save order to Firestore
           await addDoc(collection(db, "orders"), orderData);
-          showToast("Order submitted successfully.");
+
+          // Show success message
+          showToast("Order submitted successfully! Redirecting...", 'success');
+          
+          // Clear localStorage
           localStorage.removeItem("cart");
           localStorage.removeItem("latestOrder");
-          setTimeout(() => window.location.href = "success.html", 2000);
-        } catch (err) {
-          console.error("Error writing order:", err);
-          showToast("Failed to submit. Try again.");
-          resetBtn();
+
+          // Redirect after delay
+          setTimeout(() => {
+            window.location.href = "success.html?orderId=" + orderId;
+          }, 2000);
+
+        } catch (error) {
+          console.error("Error submitting order:", error);
+          showToast("Failed to submit order. Please try again.", 'error');
+          resetSubmitButton();
         }
       });
+    });
 
-      function resetBtn() {
-        btn.disabled = false;
-        text.textContent = "Submit Reference";
-        spinner.style.display = "none";
+    // Format reference input (uppercase)
+    refInput.addEventListener('input', (e) => {
+      e.target.value = e.target.value.toUpperCase();
+    });
+
+    // Format amount input (2 decimal places)
+    amountInput.addEventListener('blur', (e) => {
+      if (e.target.value) {
+        const value = parseFloat(e.target.value);
+        if (!isNaN(value)) {
+          e.target.value = value.toFixed(2);
+        }
+      }
+    });
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', () => {
+      displayOrderInfo();
+      
+      // Generate and display order ID immediately
+      if (order) {
+        generateOrderId().then(({ orderId }) => {
+          document.getElementById('orderIdDisplay').textContent = orderId;
+        });
       }
     });
   </script>
-
 </body>
 </html>

@@ -4,250 +4,464 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Flexxcart | Checkout</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="style.css">
   <script type="module" src="shared.js"></script>
   <script src="inject.js" defer></script>
   <style>
-    html,body{
-      overflow-x: hidden;
-
+    :root {
+      --primary-color: #d60000;
+      --primary-hover: #b30000;
+      --text-dark: #333;
+      --text-light: #666;
+      --border-color: #e0e0e0;
+      --bg-light: #f8f9fa;
+      --shadow-light: 0 2px 10px rgba(0,0,0,0.1);
+      --shadow-medium: 0 4px 20px rgba(0,0,0,0.15);
+      --border-radius: 12px;
+      --transition: all 0.3s ease;
     }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      overflow-x: hidden;
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
     main {
       flex: 1;
+      padding: 20px 15px;
+      min-height: 80vh;
     }
 
     .checkout-container {
-      width: 1300px;
-      margin: 40px auto;
+      max-width: 1200px;
+      margin: 0 auto;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 30px;
+      padding: 20px 0;
     }
 
     .card {
-      background-color: white;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-      min-width: 0;
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 30px;
+      box-shadow: var(--shadow-light);
+      border: 1px solid var(--border-color);
+      transition: var(--transition);
+      height: fit-content;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-medium);
     }
 
     .card h2 {
-      margin-top: 0;
-      color: black;
-      font-size: 1.4rem;
+      margin: 0 0 25px 0;
+      color: var(--text-dark);
+      font-size: 1.5rem;
+      font-weight: 600;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 10px;
+    }
+
+    /* Order Summary Table */
+    .table-container {
+      overflow-x: auto;
+      margin: 15px 0;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      font-size: 0.9rem;
     }
 
     th, td {
-      padding: 10px 0;
-      vertical-align: top;
-
+      padding: 12px 8px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
     }
 
     th {
+      background-color: var(--bg-light);
       font-weight: 600;
-      color: #333;
-      text-align: left;
+      color: var(--text-dark);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    td img {
-      width: 40px;
-      height: 40px;
-      object-fit: contain;
-      margin-right: 10px;
-      vertical-align: middle;
-      border-radius: 6px;
+    td {
+      color: var(--text-light);
     }
 
-    td:nth-child(1) {
-       white-space: nowrap;          
-       overflow: hidden;              
-       text-overflow: ellipsis;       
-       max-width: 150px;
-     }
-
-    td:nth-child(2), td:nth-child(3), td:nth-child(4),
-    th:nth-child(2), th:nth-child(3), th:nth-child(4) {
-      text-align: center;
+    .product-cell {
+      display: flex;
+      align-items: center;
+      min-width: 200px;
     }
 
-    td:nth-child(2), th:nth-child(2){
-      padding-left: 100px;
+    .product-image {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 12px;
+      border: 1px solid var(--border-color);
     }
 
-    td:nth-child(3), th:nth-child(3); { padding-left: 60px; 
+    .product-name {
+      font-weight: 500;
+      color: var(--text-dark);
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
-    td:nth-child(4) { padding-left: 50px; }
-    td:nth-child(4), th:nth-child(4) { 
-      padding-left: 60px; 
+
+    .text-center {
+      text-align: center !important;
+    }
+
+    .text-right {
+      text-align: right !important;
+    }
+
+    .total-row {
+      background-color: var(--bg-light);
+      font-weight: 600;
     }
 
     .total-row td {
-      font-weight: 600;
+      color: var(--text-dark);
+      font-size: 1rem;
+      padding: 15px 8px;
     }
 
+    .final-total-row {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .final-total-row td {
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    /* Form Styles */
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     .form-group label {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
       font-weight: 500;
+      color: var(--text-dark);
+      font-size: 0.9rem;
     }
 
-    .form-group input, .form-group select {
+    .form-control {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
+      padding: 12px 15px;
+      border: 2px solid var(--border-color);
       border-radius: 8px;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      background-color: white;
     }
 
-    .hidden { display: none; }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(214, 0, 0, 0.1);
+    }
 
-    button.place-order {
+    .form-control:disabled {
+      background-color: var(--bg-light);
+      color: var(--text-light);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Button Styles */
+    .place-order-btn {
       width: 100%;
-      background-color: #d60000;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
       color: white;
-      padding: 12px;
+      padding: 15px 20px;
       border: none;
       border-radius: 8px;
       font-size: 1rem;
-      font-weight: bold;
+      font-weight: 600;
       cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    button.place-order:hover {
-      background-color: #d60000;
+    .place-order-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, var(--primary-hover), #990000);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
     }
 
+    .place-order-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Toast Notification */
     .toast {
       position: fixed;
       bottom: 30px;
       right: 30px;
-      background-color: #28a745;
+      background: linear-gradient(135deg, #28a745, #20c997);
       color: white;
-      padding: 12px 20px;
-      border-radius: 6px;
+      padding: 15px 20px;
+      border-radius: 8px;
       font-weight: 500;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      box-shadow: var(--shadow-medium);
       opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease-in-out;
+      transform: translateX(100px);
+      transition: all 0.4s ease;
       z-index: 9999;
+      max-width: 300px;
     }
+
     .toast.show {
       opacity: 1;
-      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    .toast.error {
+      background: linear-gradient(135deg, #dc3545, #c82333);
+    }
+
+    /* Loading States */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Empty Cart State */
+    .empty-cart {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-light);
+    }
+
+    .empty-cart i {
+      font-size: 4rem;
+      color: var(--border-color);
+      margin-bottom: 20px;
+    }
+
+    .empty-cart h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: var(--text-dark);
+    }
+
+    .empty-cart p {
+      margin-bottom: 25px;
+    }
+
+    .btn-secondary {
+      background-color: var(--text-light);
+      color: white;
+      padding: 12px 25px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--text-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .checkout-container {
+        max-width: 900px;
+        gap: 25px;
+      }
+      
+      .card {
+        padding: 25px;
+      }
     }
 
     @media (max-width: 768px) {
-    .checkout-container {
-      grid-template-columns: 1fr;
-      width: 100%;
-      max-width: 420px;   
+      .checkout-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 10px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .card h2 {
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+      }
+
+      table {
+        font-size: 0.8rem;
+      }
+
+      th, td {
+        padding: 10px 6px;
+      }
+
+      .product-image {
+        width: 40px;
+        height: 40px;
+        margin-right: 8px;
+      }
+
+      .product-name {
+        max-width: 120px;
+        font-size: 0.85rem;
+      }
+
+      .toast {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        max-width: none;
+      }
     }
 
-    td:nth-child(1) {
-       white-space: nowrap;          
-       overflow: hidden;              
-       text-overflow: ellipsis;       
-       max-width: 100px;
-     }
-  }
+    @media (max-width: 480px) {
+      main {
+        padding: 15px 10px;
+      }
 
-  @media (max-width: 430px) {
-    .checkout-container {
-      grid-template-columns: 1fr;
-      width: 100%;
-      max-width: 378px;
-      margin-left: 1p5x;
+      .checkout-container {
+        gap: 15px;
+      }
+
+      .card {
+        padding: 15px;
+      }
+
+      .card h2 {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+      }
+
+      table {
+        font-size: 0.75rem;
+      }
+
+      th, td {
+        padding: 8px 4px;
+      }
+
+      .product-cell {
+        min-width: 140px;
+      }
+
+      .product-image {
+        width: 35px;
+        height: 35px;
+      }
+
+      .product-name {
+        max-width: 80px;
+        font-size: 0.8rem;
+      }
+
+      .form-control {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+      }
+
+      .place-order-btn {
+        padding: 12px 15px;
+        font-size: 0.9rem;
+      }
     }
 
-     td:nth-child(1) {
-       white-space: nowrap;          
-       overflow: hidden;              
-       text-overflow: ellipsis;       
-       max-width: 120px;
-     }
+    @media (max-width: 360px) {
+      .product-image {
+        display: none;
+      }
 
-     table{
-      margin-left: -9px;
-      font-size: 12px;
+      .product-cell {
+        min-width: 100px;
+      }
 
-     }
-  }
+      .product-name {
+        max-width: 90px;
+      }
 
-  @media (max-width: 396px) {
-    .checkout-container {
-      grid-template-columns: 1fr;
-      width: 100%;
-      max-width: 360px;
-      margin-left: auto;
-      margin-right: auto;
+      table {
+        font-size: 0.7rem;
+      }
+
+      th, td {
+        padding: 6px 3px;
+      }
     }
 
-    td:nth-child(1){
-      max-width: 100px;
+    /* Auth Loading State */
+    .auth-loading {
+      opacity: 0.7;
+      pointer-events: none;
     }
 
-    td img {
-      display: none;
+    .auth-loading .card {
+      position: relative;
     }
 
-    table{
-      font-size: 12px;
-    }
-  }
-
-  @media (max-width: 385px) {
-    .checkout-container{
-      max-width: 340px;
+    .auth-loading .card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
       align-items: center;
-      margin-left: auto;
-      margin-right: auto;
+      justify-content: center;
+      border-radius: var(--border-radius);
     }
-
-    table{
-      font-size: 10px;
-      margin-left: -15px;
-    }
-
-
-
-    td img{
-      display: none;
-    }
-
-  }
-
-    @media (max-width: 1025px) {
-    .checkout-container {
-      width: 900px;
-    }
-
-    td{
-      font-size: 12px;
-    }
-
-    th:nth-child(3){padding-left: 40px;}
-    td:nth-child(3){padding-left: 40px;}
-
-    th:nth-child(2){padding-left: 30px;}
-    td:nth-child(2){padding-left: 40px;}
-
-    th:nth-child(4){padding-left: 40px;}
-
-
-  }
   </style>
 </head>
 <body class="auth-loading">
@@ -257,59 +471,99 @@
   <main>
     <div class="checkout-container">
       <div class="card" id="order-summary">
-        <h2>Order Summary</h2>
-        <table id="summary-table">
-          <thead>
-            <tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr>
-          </thead>
-          <tbody></tbody>
-          <tfoot>
-            <tr class="total-row">
-              <td>Total</td><td></td><td></td><td id="grand-total"></td>
-            </tr>
-            <tr class="total-row" id="delivery-row" style="display:none">
-              <td>Delivery Fee</td><td></td><td></td><td id="delivery-fee"></td>
-            </tr>
-            <tr class="total-row">
-              <td>Final Total</td><td></td><td></td><td id="final-total"></td>
-            </tr>
-          </tfoot>
-        </table>
+        <h2><i class="fas fa-shopping-cart"></i> Order Summary</h2>
+        <div id="cart-content">
+          <div class="table-container">
+            <table id="summary-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th class="text-center">Price</th>
+                  <th class="text-center">Qty</th>
+                  <th class="text-right">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+              <tfoot>
+                <tr class="total-row">
+                  <td><strong>Subtotal</strong></td>
+                  <td></td>
+                  <td></td>
+                  <td class="text-right" id="grand-total"></td>
+                </tr>
+                <tr class="total-row hidden" id="delivery-row">
+                  <td><strong>Delivery Fee</strong></td>
+                  <td></td>
+                  <td></td>
+                  <td class="text-right" id="delivery-fee"></td>
+                </tr>
+                <tr class="final-total-row">
+                  <td><strong>Total Amount</strong></td>
+                  <td></td>
+                  <td></td>
+                  <td class="text-right" id="final-total"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
       </div>
+
       <div class="card">
-        <h2>Delivery & Payment</h2>
+        <h2><i class="fas fa-credit-card"></i> Delivery & Payment</h2>
+        
         <div class="form-group">
-          <label for="orderType">Order Type</label>
-          <select id="orderType">
-            <option value="pickup">Pickup</option>
-            <option value="delivery">Delivery</option>
+          <label for="orderType">
+            <i class="fas fa-truck"></i> Order Type
+          </label>
+          <select id="orderType" class="form-control">
+            <option value="pickup">Store Pickup</option>
+            <option value="delivery">Home Delivery</option>
           </select>
         </div>
+
         <div class="form-group hidden" id="pickupTime">
-          <label for="pickupDate">Pickup Date</label>
-          <input type="date" id="pickupDate">
-          <label for="pickupTimeInput">Pickup Time</label>
-          <input type="time" id="pickupTimeInput">
+          <label for="pickupDate">
+            <i class="fas fa-calendar"></i> Pickup Date
+          </label>
+          <input type="date" id="pickupDate" class="form-control">
+          
+          <label for="pickupTimeInput" style="margin-top: 15px;">
+            <i class="fas fa-clock"></i> Pickup Time
+          </label>
+          <input type="time" id="pickupTimeInput" class="form-control">
         </div>
+
         <div class="form-group hidden" id="deliveryAddress">
-          <label for="address">Select Address</label>
-          <select id="address"></select>
+          <label for="address">
+            <i class="fas fa-map-marker-alt"></i> Delivery Address
+          </label>
+          <select id="address" class="form-control">
+            <option disabled selected>Loading addresses...</option>
+          </select>
+          <small style="color: var(--text-light); margin-top: 5px; display: block;">
+            <a href="saved_address.html" style="color: var(--primary-color);">
+              Add new address
+            </a>
+          </small>
         </div>
+
         <div class="form-group">
-          <label for="paymentMethod">Payment Method</label>
-          <select id="paymentMethod">
+          <label for="paymentMethod">
+            <i class="fas fa-credit-card"></i> Payment Method
+          </label>
+          <select id="paymentMethod" class="form-control">
             <option value="ecocash">EcoCash</option>
             <option value="innbucks">Innbucks</option>
-            <option value="visa">Visa</option>
+            <option value="visa">Visa Card</option>
             <option value="mastercard">Mastercard</option>
             <option value="pickup">Pay on Pickup</option>
           </select>
         </div>
-        <button id="placeOrderBtn" class="place-order">
+
+        <button id="placeOrderBtn" class="place-order-btn">
           <span id="placeOrderText">Place Order</span>
-          <span id="placeOrderSpinner" style="display: none; margin-left: 8px;">
-            <i class="fas fa-spinner fa-spin"></i>
-          </span>
+          <span id="placeOrderSpinner" class="loading hidden"></span>
         </button>
       </div>
     </div>
@@ -321,213 +575,366 @@
   <div id="toast" class="toast"></div>
 
   <script type="module">
-  import { db, auth, updateCartCount } from './shared.js';
-  import { getDoc, getDocs, doc, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    // Import Firebase utilities from shared.js (secure approach)
+    import { db, auth, updateCartCount } from './shared.js';
+    import { 
+      getDoc, 
+      getDocs, 
+      doc, 
+      collection 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { 
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const summaryBody = document.querySelector('#summary-table tbody');
-  const grandTotal = document.getElementById('grand-total');
-  const finalTotalCell = document.getElementById('final-total');
-  const deliveryFeeCell = document.getElementById('delivery-fee');
-  const deliveryRow = document.getElementById('delivery-row');
-  const addressSelect = document.getElementById('address');
+    // Initialize variables
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const summaryBody = document.querySelector('#summary-table tbody');
+    const grandTotal = document.getElementById('grand-total');
+    const finalTotalCell = document.getElementById('final-total');
+    const deliveryFeeCell = document.getElementById('delivery-fee');
+    const deliveryRow = document.getElementById('delivery-row');
+    const addressSelect = document.getElementById('address');
+    const cartContent = document.getElementById('cart-content');
 
-  const orderType = document.getElementById('orderType');
-  const deliveryAddress = document.getElementById('deliveryAddress');
-  const pickupTime = document.getElementById('pickupTime');
-  const paymentMethod = document.getElementById('paymentMethod');
+    const orderType = document.getElementById('orderType');
+    const deliveryAddress = document.getElementById('deliveryAddress');
+    const pickupTime = document.getElementById('pickupTime');
+    const paymentMethod = document.getElementById('paymentMethod');
 
-  const DELIVERY_THRESHOLD = 10;
-  const DELIVERY_FEE = 2.5;
-  let total = 0;
+    const DELIVERY_THRESHOLD = 10;
+    const DELIVERY_FEE = 2.5;
+    let total = 0;
 
-  function showToast(message) {
-    const toast = document.getElementById("toast");
-    toast.textContent = message;
-    toast.classList.add("show");
-    setTimeout(() => toast.classList.remove("show"), 3000);
-  }
-
-  async function fetchProductDetails() {
-    const snapshot = await getDocs(collection(db, 'products'));
-    const allProducts = {};
-    snapshot.forEach(doc => allProducts[doc.id] = doc.data());
-
-    summaryBody.innerHTML = '';
-    cart.forEach(item => {
-      const data = allProducts[item.id];
-      const name = data?.name || 'Unnamed';
-      const price = parseFloat(data?.price) || 0;
-      const image = data?.image || '';
-      const quantity = item.quantity || 1;
-      const subtotal = (price * quantity).toFixed(2);
-      total += price * quantity;
-
-      item.price = price;
-      item.name = name;
-
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><img src="${image}" alt="${name}"> ${name}</td>
-        <td>$${price.toFixed(2)}</td>
-        <td>${quantity}</td>
-        <td>$${subtotal}</td>
-      `;
-      summaryBody.appendChild(row);
-    });
-
-    grandTotal.textContent = `$${total.toFixed(2)}`;
-    updateTotals();
-  }
-
-  function updateTotals() {
-    const isDelivery = orderType.value === 'delivery';
-    let finalTotal = total;
-
-    if (isDelivery && total >= DELIVERY_THRESHOLD) {
-      deliveryRow.style.display = '';
-      deliveryFeeCell.textContent = `$${DELIVERY_FEE.toFixed(2)}`;
-      finalTotal += DELIVERY_FEE;
-    } else {
-      deliveryRow.style.display = 'none';
+    // Utility function for toast notifications
+    function showToast(message, isError = false) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.className = `toast ${isError ? 'error' : ''} show`;
+      setTimeout(() => toast.classList.remove("show"), 4000);
     }
 
-    finalTotalCell.textContent = `$${finalTotal.toFixed(2)}`;
-  }
-
-  function toggleOptions() {
-    const isDelivery = orderType.value === 'delivery';
-    deliveryAddress.classList.toggle('hidden', !isDelivery);
-    pickupTime.classList.toggle('hidden', isDelivery);
-
-    Array.from(paymentMethod.options).forEach(opt => {
-      opt.disabled = isDelivery ? opt.value === 'pickup' : false;
-    });
-
-    if (isDelivery && total < DELIVERY_THRESHOLD) {
-      showToast('Delivery not available for orders below $10.');
-      orderType.value = 'pickup';
-      toggleOptions();
+    // Check if cart is empty
+    function checkEmptyCart() {
+      if (cart.length === 0) {
+        cartContent.innerHTML = `
+          <div class="empty-cart">
+            <i class="fas fa-shopping-cart"></i>
+            <h3>Your cart is empty</h3>
+            <p>Add some products to your cart to proceed with checkout.</p>
+            <a href="shop.html" class="btn-secondary">
+              <i class="fas fa-shopping-bag"></i> Continue Shopping
+            </a>
+          </div>
+        `;
+        document.querySelector('.card:last-child').style.display = 'none';
+        return true;
+      }
+      return false;
     }
 
-    updateTotals();
-  }
+    // Fetch product details and populate order summary
+    async function fetchProductDetails() {
+      if (checkEmptyCart()) return;
 
-  async function loadAddresses(userId) {
-    const snapshot = await getDocs(collection(db, `users/${userId}/addresses`));
-    addressSelect.innerHTML = '';
+      try {
+        const snapshot = await getDocs(collection(db, 'products'));
+        const allProducts = {};
+        snapshot.forEach(doc => allProducts[doc.id] = doc.data());
 
-    if (snapshot.empty) {
-      const option = document.createElement('option');
-      option.disabled = true;
-      option.textContent = "No saved addresses found";
-      addressSelect.appendChild(option);
-      return;
-    }
+        summaryBody.innerHTML = '';
+        total = 0;
 
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const option = document.createElement('option');
-      option.value = doc.id;
-      option.textContent = `${data.fullName} - ${data.phone} - ${data.addressLine}`;
-      if (data.isDefault) option.selected = true;
-      addressSelect.appendChild(option);
-    });
-  }
+        cart.forEach(item => {
+          const data = allProducts[item.id];
+          const name = data?.name || 'Product not found';
+          const price = parseFloat(data?.price) || 0;
+          const image = data?.image || '';
+          const quantity = item.quantity || 1;
+          const subtotal = price * quantity;
+          total += subtotal;
 
-  document.getElementById('placeOrderBtn').addEventListener('click', async () => {
-    const placeOrderBtn = document.getElementById("placeOrderBtn");
-    const placeOrderText = document.getElementById("placeOrderText");
-    const placeOrderSpinner = document.getElementById("placeOrderSpinner");
+          // Update item with current data
+          item.price = price;
+          item.name = name;
 
-    placeOrderBtn.disabled = true;
-    placeOrderText.textContent = "Placing Order...";
-    placeOrderSpinner.style.display = "inline-block";
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>
+              <div class="product-cell">
+                <img src="${image}" alt="${name}" class="product-image">
+                <span class="product-name" title="${name}">${name}</span>
+              </div>
+            </td>
+            <td class="text-center">$${price.toFixed(2)}</td>
+            <td class="text-center">${quantity}</td>
+            <td class="text-right">$${subtotal.toFixed(2)}</td>
+          `;
+          summaryBody.appendChild(row);
+        });
 
-    const isDelivery = orderType.value === 'delivery';
-    const addressId = addressSelect.value;
-    const date = document.getElementById('pickupDate').value;
-    const time = document.getElementById('pickupTimeInput').value;
-
-    if (isDelivery && !addressId) {
-      showToast('Please select a delivery address.');
-      resetBtn();
-      return;
-    }
-
-    if (!isDelivery && (!date || !time)) {
-      showToast('Please provide pickup date and time.');
-      resetBtn();
-      return;
-    }
-
-    let fullAddress = '';
-    if (isDelivery) {
-      const user = auth.currentUser;
-      if (user) {
-        const addressRef = doc(db, `users/${user.uid}/addresses/${addressId}`);
-        const addressSnap = await getDoc(addressRef);
-        if (addressSnap.exists()) {
-          const data = addressSnap.data();
-          fullAddress = `${data.fullName} - ${data.phone} - ${data.addressLine}`;
-        } else {
-          showToast('Failed to fetch address.');
-          resetBtn();
-          return;
-        }
-      } else {
-        showToast('You must be logged in.');
-        resetBtn();
-        return;
+        grandTotal.textContent = `$${total.toFixed(2)}`;
+        updateTotals();
+      } catch (error) {
+        console.error("Error fetching product details:", error);
+        showToast("Error loading product details. Please refresh.", true);
       }
     }
 
-    const finalTotal = (isDelivery && total >= DELIVERY_THRESHOLD)
-      ? (total + DELIVERY_FEE).toFixed(2)
-      : total.toFixed(2);
+    // Update total calculations
+    function updateTotals() {
+      const isDelivery = orderType.value === 'delivery';
+      let finalTotal = total;
 
-    const order = {
-      id: 'ORD' + Math.floor(Math.random() * 1000000),
-      cart,
-      total: `$${finalTotal}`,
-      orderType: orderType.value,
-      paymentMethod: paymentMethod.value,
-      deliveryAddress: isDelivery ? fullAddress : '',
-      pickupDate: isDelivery ? '' : date,
-      pickupTime: isDelivery ? '' : time,
-      timestamp: new Date().toISOString()
-    };
+      if (isDelivery && total >= DELIVERY_THRESHOLD) {
+        deliveryRow.classList.remove('hidden');
+        deliveryFeeCell.textContent = `$${DELIVERY_FEE.toFixed(2)}`;
+        finalTotal += DELIVERY_FEE;
+      } else {
+        deliveryRow.classList.add('hidden');
+      }
 
-    localStorage.setItem('latestOrder', JSON.stringify(order));
-    window.location.href = 'payment.html';
-
-    function resetBtn() {
-      placeOrderBtn.disabled = false;
-      placeOrderText.textContent = "Place Order";
-      placeOrderSpinner.style.display = "none";
+      finalTotalCell.textContent = `$${finalTotal.toFixed(2)}`;
     }
-  });
 
-  orderType.addEventListener('change', toggleOptions);
+    // Toggle delivery/pickup options
+    function toggleOptions() {
+      const isDelivery = orderType.value === 'delivery';
+      
+      deliveryAddress.classList.toggle('hidden', !isDelivery);
+      pickupTime.classList.toggle('hidden', isDelivery);
 
-  onAuthStateChanged(auth, user => {
-    document.body.classList.remove('auth-loading');
-    updateCartCount();
-    if (user) loadAddresses(user.uid);
-  });
+      // Update payment method options
+      Array.from(paymentMethod.options).forEach(opt => {
+        opt.disabled = isDelivery ? opt.value === 'pickup' : false;
+      });
 
-  fetchProductDetails();
-  toggleOptions();
+      // Check delivery threshold
+      if (isDelivery && total < DELIVERY_THRESHOLD) {
+        showToast(`Delivery requires a minimum order of ${DELIVERY_THRESHOLD}. Please add more items or choose pickup.`, true);
+        orderType.value = 'pickup';
+        toggleOptions();
+        return;
+      }
 
-  addressSelect.addEventListener('click', () => {
-    if (addressSelect.options.length === 1 && addressSelect.options[0].disabled) {
-      setTimeout(() => {
-        window.location.href = 'saved_address.html';
-      }, 1500);
+      // Reset payment method if it becomes disabled
+      if (paymentMethod.value === 'pickup' && isDelivery) {
+        paymentMethod.value = 'ecocash';
+      }
+
+      // Load addresses when switching to delivery
+      if (isDelivery && auth.currentUser) {
+        loadAddresses(auth.currentUser.uid);
+      }
+
+      updateTotals();
     }
-  });
-</script>
 
+    // Load user addresses for delivery
+    async function loadAddresses(userId) {
+      try {
+        console.log("Loading addresses for user:", userId);
+        const snapshot = await getDocs(collection(db, "users", userId, "addresses"));
+        addressSelect.innerHTML = '';
+
+        if (snapshot.empty) {
+          console.log("No addresses found");
+          const option = document.createElement('option');
+          option.disabled = true;
+          option.selected = true;
+          option.textContent = "No saved addresses - Click to add one";
+          option.value = "";
+          addressSelect.appendChild(option);
+          return;
+        }
+
+        console.log("Found", snapshot.size, "addresses");
+        let hasDefault = false;
+
+        snapshot.forEach(docSnap => {
+          const data = docSnap.data();
+          const option = document.createElement('option');
+          option.value = docSnap.id;
+          option.textContent = `${data.fullName} - ${data.phone} - ${data.addressLine}`;
+          
+          if (data.isDefault) {
+            option.selected = true;
+            hasDefault = true;
+          }
+          
+          addressSelect.appendChild(option);
+        });
+
+        // If no default address, select the first one
+        if (!hasDefault && addressSelect.options.length > 0) {
+          addressSelect.options[0].selected = true;
+        }
+
+        console.log("Addresses loaded successfully");
+      } catch (error) {
+        console.error("Error loading addresses:", error);
+        showToast("Error loading addresses", true);
+        
+        // Add error option
+        addressSelect.innerHTML = '';
+        const option = document.createElement('option');
+        option.disabled = true;
+        option.selected = true;
+        option.textContent = "Error loading addresses - Please refresh";
+        option.value = "";
+        addressSelect.appendChild(option);
+      }
+    }
+
+    // Set minimum date for pickup
+    function setMinPickupDate() {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      document.getElementById('pickupDate').min = tomorrow.toISOString().split('T')[0];
+    }
+
+    // Validate form before submission
+    function validateForm() {
+      const isDelivery = orderType.value === 'delivery';
+      
+      if (isDelivery) {
+        if (!addressSelect.value || addressSelect.options[addressSelect.selectedIndex].disabled) {
+          showToast('Please select a valid delivery address.', true);
+          return false;
+        }
+      } else {
+        const date = document.getElementById('pickupDate').value;
+        const time = document.getElementById('pickupTimeInput').value;
+        
+        if (!date || !time) {
+          showToast('Please provide both pickup date and time.', true);
+          return false;
+        }
+
+        // Check if pickup date is not in the past
+        const pickupDateTime = new Date(`${date}T${time}`);
+        const now = new Date();
+        if (pickupDateTime <= now) {
+          showToast('Pickup time must be in the future.', true);
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    // Handle order placement
+    async function placeOrder() {
+      if (!validateForm()) return;
+
+      const placeOrderBtn = document.getElementById("placeOrderBtn");
+      const placeOrderText = document.getElementById("placeOrderText");
+      const placeOrderSpinner = document.getElementById("placeOrderSpinner");
+
+      // Update button state
+      placeOrderBtn.disabled = true;
+      placeOrderText.textContent = "Processing...";
+      placeOrderSpinner.classList.remove("hidden");
+
+      try {
+        const isDelivery = orderType.value === 'delivery';
+        let fullAddress = '';
+
+        if (isDelivery) {
+          const user = auth.currentUser;
+          if (!user) {
+            showToast('Please log in to place an order.', true);
+            return;
+          }
+
+          const addressId = addressSelect.value;
+          if (!addressId || addressSelect.options[addressSelect.selectedIndex].disabled) {
+            showToast('Please select a valid delivery address.', true);
+            return;
+          }
+
+          const addressRef = doc(db, "users", user.uid, "addresses", addressId);
+          const addressSnap = await getDoc(addressRef);
+          
+          if (addressSnap.exists()) {
+            const data = addressSnap.data();
+            fullAddress = `${data.fullName}, ${data.phone}, ${data.addressLine}`;
+          } else {
+            showToast('Selected address not found.', true);
+            return;
+          }
+        }
+
+        const finalTotal = (isDelivery && total >= DELIVERY_THRESHOLD)
+          ? (total + DELIVERY_FEE).toFixed(2)
+          : total.toFixed(2);
+
+        const order = {
+          id: 'ORD' + Date.now() + Math.floor(Math.random() * 1000),
+          cart: cart,
+          total: `$${finalTotal}`,
+          orderType: orderType.value,
+          paymentMethod: paymentMethod.value,
+          deliveryAddress: isDelivery ? fullAddress : '',
+          pickupDate: isDelivery ? '' : document.getElementById('pickupDate').value,
+          pickupTime: isDelivery ? '' : document.getElementById('pickupTimeInput').value,
+          timestamp: new Date().toISOString(),
+          status: 'pending'
+        };
+
+        localStorage.setItem('latestOrder', JSON.stringify(order));
+        
+        // Clear cart and redirect
+        localStorage.removeItem('cart');
+        updateCartCount();
+        
+        showToast('Order placed successfully! Redirecting to payment...', false);
+        
+        setTimeout(() => {
+          window.location.href = 'payment.html';
+        }, 2000);
+
+      } catch (error) {
+        console.error('Error placing order:', error);
+        showToast('Error placing order. Please try again.', true);
+      } finally {
+        // Reset button state
+        placeOrderBtn.disabled = false;
+        placeOrderText.textContent = "Place Order";
+        placeOrderSpinner.classList.add("hidden");
+      }
+    }
+
+    // Event listeners
+    document.getElementById('placeOrderBtn').addEventListener('click', placeOrder);
+    orderType.addEventListener('change', toggleOptions);
+
+    // Handle address selection - redirect to add address if none exist
+    addressSelect.addEventListener('click', () => {
+      if (addressSelect.options.length === 1 && addressSelect.options[0].disabled) {
+        showToast('Redirecting to add address page...', false);
+        setTimeout(() => {
+          window.location.href = 'saved_address.html';
+        }, 1500);
+      }
+    });
+
+    // Initialize on auth state change
+    onAuthStateChanged(auth, user => {
+      document.body.classList.remove('auth-loading');
+      updateCartCount();
+      
+      if (user && orderType.value === 'delivery') {
+        loadAddresses(user.uid);
+      }
+    });
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchProductDetails();
+      toggleOptions();
+      setMinPickupDate();
+    });
+  </script>
 </body>
 </html>

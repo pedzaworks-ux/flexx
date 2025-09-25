@@ -50,7 +50,7 @@
     body, html {
       font-family: 'Roboto', sans-serif;
       background: white;
-      color: white;
+      color: var(--text-primary);
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -342,6 +342,154 @@
       font-size: 1rem;
     }
 
+    /* Product Carousel */
+    .product-carousel {
+      margin: 28px 0;
+    }
+
+    .carousel-title {
+      font-family: 'Merriweather', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-accent);
+    }
+
+    .carousel-container {
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      border-radius: var(--border-radius-md);
+    }
+
+   .carousel-track {
+      display: flex;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+    }
+
+
+    .carousel-item {
+      min-width: 33.3333%; /* desktop: 3 items */
+      box-sizing: border-box;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .carousel-card {
+      background: var(--neutral-white);
+      border-radius: var(--border-radius-md);
+      padding: 8px;
+      box-shadow: var(--shadow-light);
+      border: 1px solid rgba(214,0,0,0.06);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .carousel-item img {
+      width: 100%;
+      height: 270px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .carousel-item p {
+      margin-top: 6px;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* nav arrows */
+    .carousel-nav {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .carousel-nav button {
+      pointer-events: all;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(0,0,0,0.06);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 8px;
+      cursor: pointer;
+      box-shadow: var(--shadow-medium);
+    }
+
+    .carousel-dots {
+      display:flex;
+      gap:8px;
+      justify-content:center;
+      margin-top:10px;
+    }
+
+    .carousel-dots button {
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      border:none;
+      background: rgba(0,0,0,0.12);
+      cursor:pointer;
+      padding:0;
+    }
+
+    .carousel-dots button.active {
+      background: var(--primary-red);
+      transform: scale(1.2);
+    }
+
+    /* Tablet */
+    @media screen and (max-width: 768px) {
+      .carousel-item {
+        min-width: 50%;
+      }
+
+      .category-content {
+        padding: 20px 16px;
+      }
+    }
+
+    /* Mobile */
+    @media screen and (max-width: 480px) {
+      .carousel-item {
+        min-width: 100%;
+      }
+
+      .category-image {
+        height: 160px;
+      }
+
+      .page-title {
+        font-size: 1.4rem;
+      }
+
+      .category-content {
+        padding: 18px 14px;
+      }
+
+      .category-card h3 {
+        font-size: 1.1rem;
+      }
+
+      .carousel-item img {
+        height: 200px;
+      }
+    }
+
     /* Enhanced responsive design */
     @media screen and (max-width: 1200px) {
       .categories {
@@ -369,7 +517,7 @@
       main {
         padding: 20px 4%;
       }
-
+      
       .categories {
         grid-template-columns: repeat(2, 1fr);
         gap: 16px;
@@ -381,37 +529,6 @@
       
       .search-box {
         width: 100%;
-      }
-
-      .category-content {
-        padding: 20px 16px;
-      }
-    }
-
-    @media screen and (max-width: 480px) {
-      main {
-        padding: 16px;
-      }
-      
-      .categories {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 14px;
-      }
-      
-      .category-image {
-        height: 160px;
-      }
-      
-      .page-title {
-        font-size: 1.4rem;
-      }
-
-      .category-content {
-        padding: 18px 14px;
-      }
-
-      .category-card h3 {
-        font-size: 1.1rem;
       }
     }
 
@@ -447,6 +564,33 @@
 </head>
 <body class="auth-loading">
   <main>
+
+    <!-- Product Carousel Section (replace placeholder images with your 10 images) -->
+    <section class="product-carousel" aria-label="Featured products carousel">
+      <h2 class="carousel-title">Featured Products</h2>
+
+      <div class="carousel-container" id="carouselContainer">
+        <div class="carousel-track" id="carouselTrack">
+          <div class="carousel-item"><div class="carousel-card"><img src="cocacola.jpeg" alt="Product 1"></div></div>
+          <div class="carousel-item"><div class="carousel-card"><img src="cerevita.jpg" alt="Product 2"></div></div>
+          <div class="carousel-item"><div class="carousel-card"><img src="detol.jpg" alt="Product 3"></div></div>
+          <div class="carousel-item"><div class="carousel-card"><img src="cadberry.jpeg" alt="Product 4"></div></div>
+          <div class="carousel-item"><div class="carousel-card"><img src="skin.jpg" alt="Product 5"></div></div>
+          <div class="carousel-item"><div class="carousel-card"><img src="nivea.jpg" alt="Product 6"></div></div>
+          <div class="carousel-item"><div class="carousel-card"><img src="ramba.png" alt="Product 7"></div></div>
+          <div class="carousel-item"><div class="carousel-card"><img src="coral.jpg" alt="Product 8"></div></div>
+          <div class="carousel-item"><div class="carousel-card"><img src="oil.jpeg" alt="Product 9"></div></div>
+          <div class="carousel-item"><div class="carousel-card"><img src="satiskin.webp" alt="Product 10"></div></div>
+        </div>
+
+        <div class="carousel-nav" aria-hidden="false">
+          <button class="carousel-prev" aria-label="Previous product"><i class="fas fa-chevron-left"></i></button>
+          <button class="carousel-next" aria-label="Next product"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+
+      <div class="carousel-dots" id="carouselDots" role="tablist" aria-label="Carousel pages"></div>
+    </section>
     <div class="page-header">
       <h1 class="page-title">Shop by Category</h1>
       <div class="search-box">
@@ -463,7 +607,7 @@
       <button class="filter-btn" data-filter="sale">On Sale</button>
       <button class="filter-btn" data-filter="new">New Arrivals</button>
     </div>
-    
+
     <div class="loading-container" id="loadingIndicator">
       <div class="spinner"></div>
       <p>Loading categories...</p>
@@ -662,6 +806,243 @@
     });
   </script>
 
+  <!-- Carousel controller script (vanilla, standalone) -->
+ <script>
+(function(){
+  const track = document.getElementById('carouselTrack');
+  const container = document.getElementById('carouselContainer');
+  const dotsContainer = document.getElementById('carouselDots');
+  if (!track || !container || !dotsContainer) return;
+
+  // Keep a stable reference to original slide nodes (images/cards you placed).
+  const originalSlides = Array.from(track.children).map(node => node.cloneNode(true));
+  let slides = [];          // will hold the live set after cloning (prepended/appended)
+  let perView = 3;         // current visible count (responsive)
+  let currentIndex = 0;    // index in the live slides array
+  let intervalId = null;
+  const AUTO_MS = 3000;
+  const TRANSITION_MS = 600;
+
+  function getPerView() {
+    if (window.innerWidth <= 480) return 1;
+    if (window.innerWidth <= 768) return 2;
+    return 3;
+  }
+
+  // Build DOM: clear track and insert lastK clones, originals, firstK clones
+  function buildCarousel() {
+    perView = getPerView();
+    // clear track
+    track.innerHTML = '';
+
+    const K = perView; // number of clones on each side
+    const N = originalSlides.length;
+
+    // create fragments
+    const frag = document.createDocumentFragment();
+
+    // prepend clones of last K
+    for (let i = N - K; i < N; i++) {
+      const clone = originalSlides[(i + N) % N].cloneNode(true);
+      frag.appendChild(clone);
+    }
+
+    // append originals
+    for (let i = 0; i < N; i++) {
+      frag.appendChild(originalSlides[i].cloneNode(true));
+    }
+
+    // append clones of first K
+    for (let i = 0; i < K; i++) {
+      frag.appendChild(originalSlides[i % N].cloneNode(true));
+    }
+
+    track.appendChild(frag);
+
+    // refresh slides list
+    slides = Array.from(track.children);
+
+    // set widths (each item takes (100/perView)%)
+    slides.forEach(s => s.style.minWidth = (100 / perView) + '%');
+
+    // set start index to K (first original)
+    currentIndex = K;
+
+    // position without animation
+    setPosition(currentIndex, false);
+
+    // build dots (we’ll base them off original item indices, active item is normalized)
+    buildDots();
+  }
+
+  function itemWidthPercent() {
+    return 100 / perView;
+  }
+
+  function setPosition(index, animate = true) {
+    if (!animate) {
+      track.style.transition = 'none';
+    } else {
+      track.style.transition = `transform ${TRANSITION_MS}ms cubic-bezier(0.4,0,0.2,1)`;
+    }
+    const x = index * itemWidthPercent();
+    track.style.transform = `translateX(-${x}%)`;
+    // allow next repaint then restore transition (helps when disabling transition)
+    if (!animate) {
+      requestAnimationFrame(() => {
+        track.getBoundingClientRect(); // force reflow
+        track.style.transition = `transform ${TRANSITION_MS}ms cubic-bezier(0.4,0,0.2,1)`;
+      });
+    }
+    updateActiveDot();
+  }
+
+  function next() {
+    currentIndex++;
+    setPosition(currentIndex, true);
+  }
+
+  function prev() {
+    currentIndex--;
+    setPosition(currentIndex, true);
+  }
+
+  // build dots based on original slides — we highlight the "left-most visible" normalized index
+  function buildDots() {
+    const N = originalSlides.length;
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < N; i++) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('aria-label', 'Go to product ' + (i + 1));
+      btn.addEventListener('click', () => {
+        // jump so that clicked slide becomes the left-most visible original
+        const K = perView;
+        currentIndex = K + i;
+        setPosition(currentIndex, true);
+        restartAuto();
+      });
+      dotsContainer.appendChild(btn);
+    }
+    updateActiveDot();
+  }
+
+  function normalizedIndex() {
+    // return index of left-most visible original (0..N-1)
+    const K = perView;
+    const N = originalSlides.length;
+    let norm = currentIndex - K;
+    // wrap within [0, N-1]
+    norm = ((norm % N) + N) % N;
+    return norm;
+  }
+
+  function updateActiveDot() {
+    const N = originalSlides.length;
+    const norm = normalizedIndex();
+    const dots = Array.from(dotsContainer.children);
+    dots.forEach((d, i) => d.classList.toggle('active', i === norm));
+  }
+
+  function startAuto() {
+    if (intervalId) return;
+    intervalId = setInterval(() => {
+      next();
+    }, AUTO_MS);
+  }
+
+  function stopAuto() {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+  }
+
+  function restartAuto() {
+    stopAuto();
+    startAuto();
+  }
+
+  // when transition ends, check if we're on clones and jump (no animation) to the equivalent original
+  track.addEventListener('transitionend', () => {
+    const K = perView;
+    const N = originalSlides.length;
+
+    // if we've stepped past last original into appended clones
+    if (currentIndex >= N + K) {
+      // jump back to the equivalent original index
+      currentIndex = currentIndex - N;
+      setPosition(currentIndex, false);
+    } else if (currentIndex < K) {
+      // if we stepped left into prepended clones, jump to equivalent original
+      currentIndex = N + currentIndex;
+      setPosition(currentIndex, false);
+    }
+  });
+
+  // arrows
+  const prevBtn = document.querySelector('.carousel-prev');
+  const nextBtn = document.querySelector('.carousel-next');
+  prevBtn?.addEventListener('click', () => { prev(); restartAuto(); });
+  nextBtn?.addEventListener('click', () => { next(); restartAuto(); });
+
+  // pause on hover/focus
+  container.addEventListener('mouseenter', stopAuto);
+  container.addEventListener('mouseleave', startAuto);
+  container.addEventListener('focusin', stopAuto);
+  container.addEventListener('focusout', startAuto);
+
+  // touch support - simple swipe
+  let touchStartX = 0;
+  track.addEventListener('touchstart', (e) => {
+    stopAuto();
+    touchStartX = e.touches[0].clientX;
+  }, {passive: true});
+
+  track.addEventListener('touchend', (e) => {
+    const dx = (e.changedTouches[0].clientX - touchStartX);
+    if (Math.abs(dx) > 40) {
+      if (dx < 0) next();
+      else prev();
+    }
+    restartAuto();
+  }, {passive: true});
+
+  // keyboard navigation
+  container.setAttribute('tabindex', '0');
+  container.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') { prev(); restartAuto(); }
+    if (e.key === 'ArrowRight') { next(); restartAuto(); }
+  });
+
+  // rebuild on resize if perView changes (debounced)
+  let resizeTimer;
+  let lastPerView = getPerView();
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const newPerView = getPerView();
+      if (newPerView !== lastPerView) {
+        lastPerView = newPerView;
+        buildCarousel();
+      } else {
+        // still update widths
+        perView = newPerView;
+        slides.forEach(s => s.style.minWidth = (100 / perView) + '%');
+        setPosition(currentIndex, false);
+        updateActiveDot();
+      }
+    }, 120);
+  });
+
+  // initial build + start
+  buildCarousel();
+  startAuto();
+
+})();
+</script>
+
+
   <!-- Header/Footer Injection Script -->
   <script>
 (function(){
@@ -779,7 +1160,6 @@
   else init();
 })();
 </script>
-
 
 </body>
 </html>

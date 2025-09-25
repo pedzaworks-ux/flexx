@@ -1125,22 +1125,17 @@
   <div id="footer-container"></div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBPONiic8kjN_WBB66r6y04zDB6mI1dTYw",
-      authDomain: "flexxmart-5127c.firebaseapp.com",
-      projectId: "flexxmart-5127c",
-      storageBucket: "flexxmart-5127c.firebasestorage.app",
-      messagingSenderId: "220683612360",
-      appId: "1:220683612360:web:9898850a45983dd31475fd"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+  import { db, auth, updateCartCount as sharedUpdateCartCount } from './shared.js';
+  import { 
+    getFirestore, 
+    doc, 
+    getDoc, 
+    collection, 
+    getDocs 
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { 
+    onAuthStateChanged 
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     // DOM Elements
     const cartContent = document.getElementById('cartContent');
